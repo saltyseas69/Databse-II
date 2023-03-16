@@ -40,7 +40,7 @@
 
 <?php
 if(isset($_POST['TestRetrieveStudents'])) {
-    $dbConnection = mysqli_connect("localhost", "root", "", "DBPhase2");
+    $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
     if (!$dbConnection) {
         die("Connection failed: " . mysqli_connect_error());
     }
@@ -60,7 +60,7 @@ if(isset($_POST['TestRetrieveStudents'])) {
     mysqli_close($dbConnection);
 }
 if(isset($_POST['TestRetrieveAdmin'])) {
-    $dbConnection = mysqli_connect("localhost", "root", "", "DBPhase2");
+    $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
     if (!$dbConnection) {
         die("Connection failed: " . mysqli_connect_error());
     }
