@@ -22,13 +22,14 @@
         
         <h2>Child Info</h2>
         <?php
+            session_start();
             $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
             if (!$dbConnection) {
                 die("Connection failed: " . mysqli_connect_error());
             }
             
             //select the child of the parent that logged in
-            $childof = "SELECT student_id FROM child_of WHERE parent_id = 1";
+            $childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
             
             //the variable defined in the last line is used to access the db
             $childof_result = $dbConnection->query($childof);
@@ -39,7 +40,7 @@
                 }
             
             //select the child name using the result of previous query
-            $studentname = "SELECT * FROM users WHERE id = 7";
+            $studentname = "SELECT * FROM users WHERE id = " . $childof;
             $sname_result = $dbConnection->query($studentname);
                 while($row = $sname_result->fetch_assoc()){
                     echo "<br> Child Name: ". $row["name"]. "<br>";
