@@ -162,7 +162,7 @@ INSERT INTO `meetings` (`meeting_id`, `meeting_name`, `date`, `time_slot_id`, `c
 (2, 'Intro Mathematics', '2023-02-26', 4, 3, 112244, 'Lets do some math'),
 (3, 'Arithmetic', '2023-03-04', 3, 6, 112266, 'Add and Subtract numbers'),
 (4, 'Geometry', '2023-03-05', 5, 6, 112288, 'Compare the size of squares'),
-(5, 'English Composition', '2023-02-04', 2, 6, 112255, ''),
+(5, 'English Composition', '2023-02-04', 2, 6, 112255, 'Compose English'),
 (6, 'Intro to Programming', '2023-02-11', 4, 6, 112277, 'Learn C');
 
 -- --------------------------------------------------------
