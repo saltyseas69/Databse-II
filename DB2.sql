@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 02, 2023 at 05:24 PM
+-- Generation Time: Mar 21, 2023 at 04:53 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -162,8 +162,31 @@ INSERT INTO `meetings` (`meeting_id`, `meeting_name`, `date`, `time_slot_id`, `c
 (2, 'Intro Mathematics', '2023-02-26', 4, 3, 112244, 'Lets do some math'),
 (3, 'Arithmetic', '2023-03-04', 3, 6, 112266, 'Add and Subtract numbers'),
 (4, 'Geometry', '2023-03-05', 5, 6, 112288, 'Compare the size of squares'),
-(5, 'English Composition', '2023-02-04', 2, 6, 112255, 'Compose English'),
+(5, 'English Composition', '2023-02-04', 2, 6, 112255, ''),
 (6, 'Intro to Programming', '2023-02-11', 4, 6, 112277, 'Learn C');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `member_of`
+--
+
+CREATE TABLE `member_of` (
+  `group_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `member_of`
+--
+
+INSERT INTO `member_of` (`group_id`, `student_id`) VALUES
+(112233, 7),
+(112266, 7),
+(112244, 8),
+(112277, 8),
+(112255, 9),
+(112288, 10);
 
 -- --------------------------------------------------------
 
@@ -206,7 +229,7 @@ INSERT INTO `students` (`student_id`, `grade`) VALUES
 (8, 4),
 (9, 5),
 (10, 5),
-(11, 4);
+(11, 6);
 
 -- --------------------------------------------------------
 
@@ -251,6 +274,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `name`, `phone`) VALUES
+(0, '', '', '', NULL),
 (1, 'tonystark@gmail.com', 'iamironman', 'Tony Stark', '5551234'),
 (2, 'steverogers@admin.gmail.com', 'firstavenger', 'Steve Rogers', '5551235'),
 (3, 'brucebanner@gmail.com', 'strongestavenger', 'Bruce Banner', '5551236'),

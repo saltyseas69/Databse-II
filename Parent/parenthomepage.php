@@ -19,14 +19,24 @@
 
     <body>
         <h1>Avengers Parents Initiative</h1>
-        
-        <h2>Child Info</h2>
         <?php
             session_start();
+            
             $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
             if (!$dbConnection) {
                 die("Connection failed: " . mysqli_connect_error());
             }
+
+            $parent = "SELECT name FROM users WHERE id = " . $_SESSION['sessionID'];
+            $parent_result = $dbConnection->query($parent);
+            while($row = $parent_result->fetch_assoc()){
+                echo "Welcome " . $row["name"];
+            }
+        ?>
+        
+        <h4>Child Info</h4>
+        
+        <?php
             
             //select the child of the parent that logged in
             $childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
@@ -36,11 +46,12 @@
 
             //now fetch all the data while the rows are not empty
                 while($row = $childof_result->fetch_assoc()){
+                    $sname = $row["student_id"];
                     echo "<br> Child ID: ". $row["student_id"];
                 }
             
             //select the child name using the result of previous query
-            $studentname = "SELECT * FROM users WHERE id = " . $childof;
+            $studentname = "SELECT * FROM users WHERE id = " . $sname;
             $sname_result = $dbConnection->query($studentname);
                 while($row = $sname_result->fetch_assoc()){
                     echo "<br> Child Name: ". $row["name"]. "<br>";
