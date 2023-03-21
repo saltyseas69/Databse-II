@@ -73,7 +73,6 @@
         <h3>Current Meetings</h3>
         
         <?php
-
             $current_meeting = "SELECT meeting_name\n" 
             . "FROM enroll, meetings\n" 
             . "WHERE student_id = 7 AND enroll.meeting_id = meetings.meeting_id";
