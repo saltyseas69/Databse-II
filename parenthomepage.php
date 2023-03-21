@@ -45,9 +45,7 @@
                     echo "<br> Child Name: ". $row["name"]. "<br>";
                 }
         ?>
-
         <h3>Current Meetings</h3>
-
         <?php
 
             $current_meeting = "SELECT meeting_name\n" 
@@ -66,6 +64,16 @@
 
             $dbConnection->close();
         ?>
+        <h3>Add Meetings</h3>
+        <form method="post">
+        <input type="submit" name="submit" value="Add Meeting"/>
+        </form>
 
+        <?php
+            if(isset($_POST['submit'])){
+                $sql = "INSERT INTO enroll";
+                $result = $dbConnection->query($sql);
+            }
+        ?>
     </body>
 </html>
