@@ -20,7 +20,7 @@
     <body>
         <h1>Avengers Parents Initiative</h1>
         
-        <h3>Child Info</h3>
+        <h2>Child Info</h2>
         <?php
             $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
             if (!$dbConnection) {
@@ -44,21 +44,30 @@
                 while($row = $sname_result->fetch_assoc()){
                     echo "<br> Child Name: ". $row["name"]. "<br>";
                 }
-            
-            $sql = "SELECT name FROM groups";
-            $result = $dbConnection->query($sql);
+
+            $dbConnection->close();
+        ?>
+
+        <h3>Current Meetings</h3>
+
+        <?php
+
+            $current_meeting = "SELECT meeting_name\n" 
+            . "FROM enroll, meetings\n" 
+            . "WHERE student_id = 7 AND enroll.meeting_id = meetings.meeting_id";
+            $result = $dbConnection->query($current_meeting);
             if ($result->num_rows > 0) {
                 // output data of each row
                 while($row = $result->fetch_assoc()) {
-                    echo "<br> Group Name: ". $row["name"]. "<br>";
+                    echo "<br> Meeting Name: ". $row["meeting_name"];
                 }
             } 
             else{
                 echo "0 results";
             }
-            
+
             $dbConnection->close();
-        
         ?>
+
     </body>
 </html>
