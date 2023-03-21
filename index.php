@@ -25,7 +25,7 @@
 <h1>Avenger's School</h1>
 
 <section>
-    <a href="/Databse-II/register.php">Register New Account</a>
+    <a href="./register.php">Register New Account</a>
     <br><br>
     <form action="" method="post">
         <label for="email">Email: </label>
@@ -39,9 +39,9 @@
 </section>
 
 <?php
+session_start();
 function redirect($url) {
     header('Location: '.$url);
-    die();
 }
 
 $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
@@ -62,6 +62,7 @@ if(isset($_POST['submit'])) {
             if ($receivedPassword == $dbPassword) {
                 // Go to page based on user type (i.e. Student, Admin, Parents)
                 $userId = $row['id'];
+                $_SESSION['sessionID'] = $row['id'];
                 echo "Determining User type with ID: " . $userId;
 
                 $studentFound = true;
@@ -99,7 +100,7 @@ if(isset($_POST['submit'])) {
                     // ID is in student table, jump to student page
                 } else if ($adminFound && mysqli_num_rows($adminCheckResult) > 0){
                     // ID is in admin table, jump to admin page
-                    redirect("/Databse-II/admin.php");
+                    redirect("/Databse-II/Admin/admin.php");
                 } else if ($parentFound && mysqli_num_rows($parentCheckResult) > 0){
                     // ID is in parent table, jump to parent page
                 } else {

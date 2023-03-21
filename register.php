@@ -25,7 +25,7 @@
 <h1>Register Account</h1>
 
 <section>
-    <a href="/Databse-II/index.php">Account Login</a>
+    <a href="./index.php">Account Login</a>
     <br><br>
     <form action="" method="post">
         <label for="id">Id: </label>

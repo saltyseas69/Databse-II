@@ -22,10 +22,12 @@
 <body>
 <h1>Admin Page</h1>
 
-<br><br>
+<br>
 <nav>
-    <a href="/Databse-II/Admin/account.php">Account</a> |
-    <a href="/Databse-II/Admin/meetings.php">Meetings</a>
+    <a href="./admin.php">Home</a> |
+    <a href="./accountDetails.php">Account</a> |
+    <a href="./meetings.php">Meetings</a> |
+    <a href="../index.php">Logout</a>
 </nav>
 
 <br><br>
@@ -52,13 +54,13 @@
             $groupId = $row['group_id'];
             $announcement = $row['announcement'];
 
-            echo "Meeting ID: $meetingId" . str_repeat('&nbsp;', 10) .
-                "Meeting Name: $meetingName" . str_repeat('&nbsp;', 10) .
-                "Date: $date" . str_repeat('&nbsp;', 10) .
-                "Time Slot: $timeSlot" . str_repeat('&nbsp;', 10) .
-                "Capacity: $capacity" . str_repeat('&nbsp;', 10) .
-                "GroupID: $groupId" . str_repeat('&nbsp;', 10) .
-                "Announcement: $announcement <br><br>";
+            echo "Meeting ID: $meetingId<br>" .
+                "Meeting Name: $meetingName<br>" .
+                "Date: $date<br>" .
+                "Time Slot: $timeSlot<br>" .
+                "Capacity: $capacity<br>" .
+                "GroupID: $groupId<br>" .
+                "Announcement: $announcement <br>---------------------------------------------------------<br>";
 
         }
     } else {
