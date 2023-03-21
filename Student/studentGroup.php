@@ -7,6 +7,25 @@
     <title>Student Homepage</title>
 </head>
 <body>
-    <H1>Test</H1>
+    <H1>Student Groups</H1>
+
+    <p>Grade level will determine </p>
+    <section>
+    <br><br>
+    <form action="" method="post">
+
+        <label for="type">Select Grade Level: </label>
+        <select name="type" id="type">
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+        </select>
+        <br><br>
+        <input type="submit" name="submit" value="Submit">
+    </form>
+</section>
+
+
+
 </body>
 </html>
