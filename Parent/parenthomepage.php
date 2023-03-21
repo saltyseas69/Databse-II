@@ -92,7 +92,7 @@
         <h3>Add Child to Meetings</h3>
         
         <form method="post">
-        <input type="submit" name="submit" value="Add"/>
+        <input type="submit" name="add" value="Add"/>
         </form>
 
         <?php
@@ -102,6 +102,7 @@
             if (mysqli_num_rows($result) > 0) {
         
                 while($row = mysqli_fetch_assoc($result)) {
+                    $meetingID = $row['meeting_id'];
                     $meetingName = $row['meeting_name'];
                     $date = $row['date'];
                     $timeSlot = $row['time_slot_id'];
@@ -109,7 +110,7 @@
                     $groupId = $row['group_id'];
                     $announcement = $row['announcement'];
         
-                    echo
+                    echo"Meeting ID : $meetingID<br>" .
                         "Meeting Name: $meetingName<br>" .
                         "Date: $date<br>" .
                         "Time Slot: $timeSlot<br>" .
@@ -119,6 +120,39 @@
                 }
             }else{
                 echo "0 results";
+            }
+
+            if(isset($_POST['add'])) {
+                $meetingId = $_POST['id'];
+                $name = $_POST['name'];
+                $date = $_POST['date'];
+                $timeSlotId = $_POST['timeSlotId'];
+                $capacity = $_POST['capacity'];
+                $groupId = $_POST['groupId'];
+                $announcement = $_POST['announcement'];
+            
+                if (empty($meetingId) || empty($name) || empty($date) || empty($timeSlotId) || empty($capacity) || empty($groupId) ||
+                    empty($announcement)) {
+                    echo "<br><br>Data required in all fields";
+                } else {
+                    $createQuery = 'insert into meetings values (' .
+                        $meetingId . ', ' .
+                        '"' . $name . '", ' .
+                        '"' . $date . '", ' .
+                        $timeSlotId . ', ' .
+                        $capacity . ', ' .
+                        $groupId . ', ' .
+                        '"' . $announcement . '")';
+                    try {
+                        $result = mysqli_query($dbConnection, $createQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo $e;
+                    } finally {
+                        if ($result) {
+                            echo "<br><br>Meeting created";
+                        }
+                    }
+                }
             }
         ?>
     </body>
