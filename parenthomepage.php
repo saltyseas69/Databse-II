@@ -44,8 +44,6 @@
                 while($row = $sname_result->fetch_assoc()){
                     echo "<br> Child Name: ". $row["name"]. "<br>";
                 }
-
-            $dbConnection->close();
         ?>
 
         <h3>Current Meetings</h3>
