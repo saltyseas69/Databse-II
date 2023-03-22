@@ -19,38 +19,21 @@
 
     <body>
         <h1>Avengers Parents Initiative</h1>
+
+        <nav>
+            <a href="./parenthomepage.php">Home</a> |
+            <a href="./parentAccount.php">Account</a> |
+            <a href="../index.php">Logout</a>
+        </nav>
+        
+        <h4>Child Info</h4>
+        
         <?php
             session_start();
             $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
             if (!$dbConnection) {
                 die("Connection failed: " . mysqli_connect_error());
             }
-
-            $query = "select * from users where id = " . $_SESSION['sessionID'];
-            $result = mysqli_query($dbConnection, $query);
-
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $currID = $row['id'];
-                    $currEmail = $row['email'];
-                    $currPassword = $row['password'];
-                    $currName = $row['name'];
-                    $currPhone = $row['phone'];
-
-                    echo "ID: $currID<br>" .
-                        "Email: $currEmail<br>" .
-                        "Password: $currPassword<br>" .
-                        "Name: $currName<br>" .
-                        "Phone: $currPhone<br>";
-                }
-            } else {
-                echo "Unexpected Error: Cannot retrieve account information";
-            }
-        ?>
-        
-        <h4>Child Info</h4>
-        
-        <?php
             
             //select the child of the parent that logged in
             $childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
