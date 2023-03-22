@@ -29,7 +29,7 @@
     <a href="../index.php">Logout</a>
 </nav>
 
-<h2>Current Account Details:</h2>
+<h2>Parent Account Details:</h2>
 
 <?php
 session_start();
@@ -38,11 +38,11 @@ if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-$query = "select * from users where id = " . $_SESSION['sessionID'];
-$result = mysqli_query($dbConnection, $query);
+$parent = "select * from users where id = " . $_SESSION['sessionID'];
+$p_result = mysqli_query($dbConnection, $parent);
 
-if (mysqli_num_rows($result) > 0) {
-    while ($row = mysqli_fetch_assoc($result)) {
+if (mysqli_num_rows($p_result) > 0) {
+    while ($row = mysqli_fetch_assoc($p_result)) {
         $currID = $row['id'];
         $currEmail = $row['email'];
         $currPassword = $row['password'];
@@ -58,6 +58,35 @@ if (mysqli_num_rows($result) > 0) {
 } else {
     echo "Unexpected Error: Cannot retrieve account information";
 }
+
+echo "<br><br>Child Account Details:<br>";
+//select the child of the parent that logged in
+$childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
+//the variable defined in the last line is used to access the db
+$childof_result = $dbConnection->query($childof);
+//now fetch all the data while the rows are not empty
+    while($row = $childof_result->fetch_assoc()){
+        $child_name = $row["student_id"];
+    }
+
+//select the child name using the result of previous query
+$studentname = "SELECT * FROM users WHERE id = " . $child_name;
+$sname_result = $dbConnection->query($studentname);
+    while($row = $sname_result->fetch_assoc()){
+        $currID = $row['id'];
+        $currEmail = $row['email'];
+        $currPassword = $row['password'];
+        $currName = $row['name'];
+        $currPhone = $row['phone'];
+
+        echo "ID: $currID<br>" .
+            "Email: $currEmail<br>" .
+            "Password: $currPassword<br>" .
+            "Name: $currName<br>" .
+            "Phone: $currPhone<br>";
+    }
+
+
 
 if (isset($_POST['update'])) {
     $email = $_POST['email'];
