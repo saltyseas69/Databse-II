@@ -6,18 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin Page</title>
-    <style>
-        h1 {
-            text-align: center;
-        }
-        nav {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: block;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
 <h1>Admin Page</h1>
@@ -27,12 +15,13 @@
     <a href="./admin.php">Home</a> |
     <a href="./accountDetails.php">Account</a> |
     <a href="./meetings.php">Meetings</a> |
+    <a href="./materials.php">Materials</a> |
     <a href="../index.php">Logout</a>
 </nav>
 
 <br><br>
 <section>
-    <h3>Current Meetings</h3>
+    <h3>Meetings</h3>
     <br>
     <?php
     $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
@@ -62,6 +51,35 @@
                 "GroupID: $groupId<br>" .
                 "Announcement: $announcement <br>---------------------------------------------------------<br>";
 
+        }
+    } else {
+        echo "<br>No meetings currently made<br>";
+    }
+    ?>
+
+    <h3>Groups</h3>
+    <br>
+    <?php
+    $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
+    if (!$dbConnection) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+
+    $query = 'select * from groups';
+    $result = mysqli_query($dbConnection, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+
+        while($row = mysqli_fetch_assoc($result)) {
+            $groupId = $row['group_id'];
+            $groupName = $row['name'];
+            $description = $row['description'];
+            $gradeReq = $row['grade_req'];
+
+            echo "Group ID: $groupId<br>" .
+                "Group Name: $groupName<br>" .
+                "Description: $description<br>" .
+                "Grade Requirement: $gradeReq<br>---------------------------------------------------------<br>";
         }
     } else {
         echo "<br>No meetings currently made<br>";

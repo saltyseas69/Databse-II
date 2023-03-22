@@ -6,27 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin Meetings</title>
-    <style>
-        h1 {
-            text-align: center;
-        }
-        nav {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: block;
-            text-align: center;
-        }
-        .column {
-            float: left;
-            width: 33.33%;
-        }
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-    </style>
 </head>
 <body>
 <h1>Admin Meetings</h1>
@@ -35,6 +14,7 @@
     <a href="./admin.php">Home</a> |
     <a href="./accountDetails.php">Account</a> |
     <a href="./meetings.php">Meetings</a> |
+    <a href="./materials.php">Materials</a> |
     <a href="../index.php">Logout</a>
 </nav>
 
@@ -66,6 +46,7 @@
             <input type="submit" name="create" value="Create">
         </form>
     </div>
+    <p><br>------------------------------------------------------------<br><br></p>
     <div class="column">
         <form action="" method="post">
             <label for="id">Meeting Id: </label>
@@ -92,6 +73,7 @@
             <input type="submit" name="update" value="Update">
         </form>
     </div>
+    <p><br>------------------------------------------------------------<br><br></p>
     <div class="column">
         <form action="" method="post">
             <label for="id">Meeting Id: </label>
