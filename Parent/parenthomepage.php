@@ -58,7 +58,7 @@
         <?php
             $current_meeting = "SELECT meeting_name\n" 
             . "FROM enroll, meetings\n" 
-            . "WHERE student_id = 7 AND enroll.meeting_id = meetings.meeting_id";
+            . "WHERE student_id = ' . $child_name . 'AND enroll.meeting_id = meetings.meeting_id";
             $result = $dbConnection->query($current_meeting);
             if ($result->num_rows > 0) {
                 // output data of each row
@@ -72,9 +72,12 @@
         ?>
 
         <h3>Add Child to Meetings</h3>
+        <b>Type in corresponding Meeting ID to add student to meeting</b>
         
-        <form method="post">
-        <input type="submit" name="add" value="Add"/>
+        <form action="" method="post">
+            <label for="meetingid">Meeting ID: </label>
+            <input type="text" id="meetingid" name="meetingid">
+            <input type="submit" name="add" value="Add"/>
         </form>
 
         <?php
@@ -105,33 +108,19 @@
             }
 
             if(isset($_POST['add'])) {
-                $meetingId = $_POST['id'];
-                $name = $_POST['name'];
-                $date = $_POST['date'];
-                $timeSlotId = $_POST['timeSlotId'];
-                $capacity = $_POST['capacity'];
-                $groupId = $_POST['groupId'];
-                $announcement = $_POST['announcement'];
-            
-                if (empty($meetingId) || empty($name) || empty($date) || empty($timeSlotId) || empty($capacity) || empty($groupId) ||
-                    empty($announcement)) {
-                    echo "<br><br>Data required in all fields";
+                $meetingID = $_POST['meetingid'];
+                if (empty($meetingID)) {
+                    echo "<br><br>Input correct Meeting ID";
                 } else {
-                    $createQuery = 'insert into meetings values (' .
-                        $meetingId . ', ' .
-                        '"' . $name . '", ' .
-                        '"' . $date . '", ' .
-                        $timeSlotId . ', ' .
-                        $capacity . ', ' .
-                        $groupId . ', ' .
-                        '"' . $announcement . '")';
+                    $createQuery = 'insert into enroll values (' .
+                        $meetingID . ', '. $child_name .')';
                     try {
                         $result = mysqli_query($dbConnection, $createQuery);
                     } catch (mysqli_sql_exception $e) {
                         echo $e;
                     } finally {
                         if ($result) {
-                            echo "<br><br>Meeting created";
+                            echo "<br><br>Student Added to meeting";
                         }
                     }
                 }
