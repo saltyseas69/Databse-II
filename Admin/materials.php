@@ -203,9 +203,9 @@ if(isset($_POST['delete'])) {
     if (empty($deleteMaterialId)) {
         echo "<br><br>Material ID required";
     } else {
-        $createQuery = "delete from material where material_id = " . $deleteMaterialId;
+        $deleteQuery = "delete from material where material_id = " . $deleteMaterialId;
         try {
-            $result = mysqli_query($dbConnection, $createQuery);
+            $result = mysqli_query($dbConnection, $deleteQuery);
         } catch (mysqli_sql_exception $e) {
             echo $e;
         }
