@@ -27,4 +27,4 @@ if (!$dbConnection) {
 
 $query = "select * from students where id = " . $_SESSION['sessionID'];
 $result = mysqli_query($dbConnection, $query);
-
+?>
