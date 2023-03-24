@@ -14,8 +14,8 @@
     <br><br>
     <form action="" method="post">
 
-        <label for="type">Select Group to Add: </label>
-        <select name="type" id="type">
+        <label for="group">Select Group to Add: </label>
+        <select name="group" id="group">
             <option value="Writing">Writing</option>
             <option value="English Composition">English Composition</option>
             <option value="Intro to Programming">Intro to Programming</option>
@@ -52,11 +52,11 @@ $query = 'select * from groups where grade_req = 5';
             }else{
                 echo "0 results";
             }
-            
+
 if(isset($_POST['add'])) {
     $groupID = $_POST['groupID'];
     if(empty($groupID)){
-
+        echo "Please select a group to add";
     }
     else{
         $createQuery = 'insert into member_of values (' . 
