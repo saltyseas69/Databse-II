@@ -44,44 +44,42 @@
             <input type="text" id="announcement" name="announcement">
             <br><br>
             <input type="submit" name="create" value="Create">
-        </form>
-    </div>
-    <p><br>------------------------------------------------------------<br><br></p>
-    <div class="column">
-        <form action="" method="post">
-            <label for="id">Meeting Id: </label>
-            <input type="text" id="id" name="id">
-            <br><br>
-            <label for="name">Meeting Name: </label>
-            <input type="text" id="name" name="name">
-            <br><br>
-            <label for="date">Meeting Date(yyyy-mm-dd): </label>
-            <input type="text" id="date" name="date">
-            <br><br>
-            <label for="timeSlotId">Time Slot ID: </label>
-            <input type="text" id="timeSlotId" name="timeSlotId">
-            <br><br>
-            <label for="capacity">Capacity: </label>
-            <input type="text" id="capacity" name="capacity">
-            <br><br>
-            <label for="groupId">Group ID: </label>
-            <input type="text" id="groupId" name="groupId">
-            <br><br>
-            <label for="announcement">Announcement: </label>
-            <input type="text" id="announcement" name="announcement">
-            <br><br>
             <input type="submit" name="update" value="Update">
-        </form>
-    </div>
-    <p><br>------------------------------------------------------------<br><br></p>
-    <div class="column">
-        <form action="" method="post">
-            <label for="id">Meeting Id: </label>
-            <input type="text" id="id" name="id">
-            <br><br>
             <input type="submit" name="delete" value="Delete">
         </form>
     </div>
+</div>
+
+<br><br>
+<div>
+    <p>------------------------------------------------</p>
+    <h3>Assign Student to Meeting</h3>
+    <b>Enter Meeting ID and Student ID</b>
+
+    <form action="" method="post">
+        <label for="meetingID">Meeting ID: </label>
+        <input type="text" id="meetingID" name="meetingID">
+        <br><br>
+        <label for="studentID">Student ID: </label>
+        <input type="text" id="studentID" name="studentID">
+        <br><br>
+        <input type="submit" name="add" value="Add"/>
+    </form>
+</div>
+
+<br><br>
+<div>
+    <p>------------------------------------------------</p>
+    <h3>Verify Meetings</h3>
+    <p>Meetings must meet attendance quota by Friday.  If attendance quota is not met, meetings are cancelled and notification
+    sheet will be created.</p>
+
+    <form action="" method="post">
+        <label for="date">Current Date(yyyy-mm-dd): </label>
+        <input type="text" id="verificationDate" name="verificationDate">
+        <br><br>
+        <input type="submit" name="verify" value="Verify">
+    </form>
 </div>
 
 <?php
@@ -230,6 +228,97 @@ if(isset($_POST['delete'])) {
         } finally {
             if ($result) {
                 echo "<br><br>Meeting Deleted";
+            }
+        }
+    }
+}
+
+if(isset($_POST['verify'])) {
+    $verificationDate = date_create($_POST['verificationDate']);
+
+    $weekendDate = date_add($verificationDate, date_interval_create_from_date_string("2 days"));
+
+    // Query DB for all meetings
+    $verifyQuery = "select * from meetings";
+    $verifyResult = mysqli_query($dbConnection, $verifyQuery);
+
+    if (mysqli_num_rows($verifyResult) > 0) {
+        while ($verifyRow = mysqli_fetch_assoc($verifyResult)) {
+            $meetingDate = date_create($verifyRow['date']);
+
+            // Check if meeting is within verification window, if so verify attendance
+            if ($meetingDate < $weekendDate) {
+                $verifyMeetingId = $verifyRow['meeting_id'];
+                //Query enroll with meetingId to determine # of students in attendance
+                $enrollQuery = "select count(*) as attendance from enroll where meeting_id = " . $verifyMeetingId;
+                $enrollResult = mysqli_query($dbConnection, $enrollQuery);
+
+                // Determine if attendance is < 3, if so remove meeting and create notification file
+                $enrollRow = mysqli_fetch_assoc($enrollResult);
+                if ($enrollRow['attendance'] < 3) {
+                    // Grab userIds from Meeting
+                    $userIdQuery = "select student_id from enroll where meeting_id = " . $verifyMeetingId;
+                    $userIdResult = mysqli_query($dbConnection, $userIdQuery);
+                    if (mysqli_num_rows($userIdResult) > 0) {
+                        while ($userIdRow = mysqli_fetch_assoc($userIdResult)) {
+                            $userId = $userIdRow['student_id'];
+
+                            // Query Users for Name / email, concat to notification file
+                            $notificationListQuery = "select * from users where id = " . $userId;
+                            $notificationListResult = mysqli_query($dbConnection, $notificationListQuery);
+
+                            if (mysqli_num_rows($notificationListResult) > 0) {
+                                $notificationRow = mysqli_fetch_assoc($notificationListResult);
+                                $fileName = "../Notifications/" . $verificationDate->format('y-m-d') . "_NotifyList.txt";
+
+                                $myfile = fopen($fileName, "w");
+                                $toNotify = "Name: " . $notificationRow['name'] . "    Email: " . $notificationRow['email'];
+                                fwrite($myfile, $toNotify);
+                                fclose($myfile);
+                            } else {
+                                echo "Unexpected error: student does not exist in users table";
+                            }
+                        }
+                    } else {
+                        echo "Unexpected error: No students ids associated with enrolled tuple.";
+                    }
+                }
+                // Remove meeting
+                $deleteQuery = "delete from enroll where meeting_id  = " . $verifyRow['meeting_id'];
+                try {
+                    $result = mysqli_query($dbConnection, $deleteQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+                $deleteQuery = "delete from meetings where meeting_id  = " . $verifyRow['meeting_id'];
+                try {
+                    $result = mysqli_query($dbConnection, $deleteQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+                echo "Removed Meeting, affected Enroll and Meeting tables.";
+            }
+        }
+    } else {
+        echo "No meetings within DB.";
+    }
+}
+
+if(isset($_POST['add'])) {
+    $meetingID = $_POST['meetingID'];
+    $studentID = $_POST['studentID'];
+    if (empty($meetingID)) {
+        echo "<br><br>Input valid Meeting ID";
+    } else {
+        $addQuery = 'insert into enroll values (' .
+            $meetingID . ', '. $studentID .')';
+        try {
+            $result = mysqli_query($dbConnection, $addQuery);
+        } catch (mysqli_sql_exception $e) {
+            echo $e;
+        } finally {
+            if ($result) {
+                echo "<br><br>Student Added to meeting";
             }
         }
     }
