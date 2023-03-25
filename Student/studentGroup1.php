@@ -8,6 +8,11 @@
 </head>
 <body>
     <H1>Student Group Page 1</H1>
+    <nav>
+    <a href="./selectGrade.php">Home</a> |
+    <a href="./studentAccount.php">Account Details</a> |
+    <a href="../index.php">Logout</a>
+    </nav>
 
     <p>Students may add more than one group.</p>
     <section>
@@ -15,11 +20,9 @@
     <form action="" method="post">
 
         <label for="group">Select Group to Add: </label>
-        <select name="group" id="group">
-            <option value="Intro Mathematics">Intro Mathematics</option>
-            <option value="Arithmetic">Arithmetic</option>
-            <option value="Geometry">Geometry</option>
-        </select>
+        <form action="" method="post">
+        <input type="text" id="groupadd" name="groupadd">
+        <br><br>
         <br><br>
         <input type="submit" name="add" value="Add">
     </form>
@@ -55,12 +58,14 @@ $query = 'select * from groups where grade_req = 4';
 
 if(isset($_POST['add'])) {
     $groupID = $_POST['groupID'];
+    $id = $_POST['groupadd'];
     if(empty($groupID)){
         echo "Please select a group to add";
     }
-    else{
+    if($id == $groupID){
         $createQuery = 'insert into member_of values (' . 
             $groupID . ', '. $_SESSION['sessionID']; 
+            echo "Group has been successfully added.";
     }
 }
     
@@ -69,3 +74,4 @@ if(isset($_POST['add'])) {
 
 </body>
 </html>
+
