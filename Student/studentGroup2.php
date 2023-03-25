@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Group Page 1</title>
+    <title>Student Group Page 2</title>
 </head>
 <body>
     <H1>Student Group Page 2</H1>
+<nav>
+    <a href="./selectGrade.php">Home</a> |
+    <a href="./studentAccount.php">Account Details</a> |
+    <a href="../index.php">Logout</a>
+</nav>
 
     <p>Students may add more than one group.</p>
     <section>
@@ -15,11 +20,9 @@
     <form action="" method="post">
 
         <label for="group">Select Group to Add: </label>
-        <select name="group" id="group">
-            <option value="Writing">Writing</option>
-            <option value="English Composition">English Composition</option>
-            <option value="Intro to Programming">Intro to Programming</option>
-        </select>
+        <form action="" method="post">
+        <input type="text" id="groupadd" name="groupadd">
+        <br><br>
         <br><br>
         <input type="submit" name="add" value="Add">
     </form>
@@ -55,12 +58,14 @@ $query = 'select * from groups where grade_req = 5';
 
 if(isset($_POST['add'])) {
     $groupID = $_POST['groupID'];
+    $id = $_POST['groupadd'];
     if(empty($groupID)){
         echo "Please select a group to add";
     }
-    else{
+    if($id == $groupID){
         $createQuery = 'insert into member_of values (' . 
             $groupID . ', '. $_SESSION['sessionID']; 
+            echo "Group has been successfully added.";
     }
 }
 

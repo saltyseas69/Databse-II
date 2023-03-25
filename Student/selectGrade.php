@@ -8,7 +8,12 @@
 </head>
 <body>
     <H1>Student Homepage</H1>
-
+<nav>
+    <a href="./selectGrade.php">Home</a> |
+    <a href="./studentAccount.php">Account Details</a> 
+    <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
+    <a href="../index.php">Logout</a>
+</nav>
     <p>Groups are determined based on grade level.</p>
     <section>
     <br><br>
