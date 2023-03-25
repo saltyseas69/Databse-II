@@ -62,7 +62,7 @@ if(isset($_POST['add'])) {
     if(empty($groupID)){
         echo "Please select a group to add";
     }
-    if($id == $groupID){
+    else if($id == $groupID){
         $createQuery = 'insert into member_of values (' . 
             $groupID . ', '. $_SESSION['sessionID']; 
             echo "Group has been successfully added.";
