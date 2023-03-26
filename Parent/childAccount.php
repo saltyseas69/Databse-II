@@ -81,7 +81,7 @@ if (isset($_POST['update'])) {
         echo "No data to update";
     } else {
         if (!empty($email)) {
-            $updateQuery = 'update users set email = "' . $email . '" where id = ' . $_SESSION['sessionID'];
+            $updateQuery = 'update users set email = "' . $email . '" where id = ' . $child_name;
             $updateResult = mysqli_query($dbConnection, $updateQuery);
 
             if (!$updateResult) {
@@ -91,7 +91,7 @@ if (isset($_POST['update'])) {
             }
         }
         if (!empty($password)) {
-            $updateQuery = 'update users set password = "' . $password . '" where id = ' . $_SESSION['sessionID'];
+            $updateQuery = 'update users set password = "' . $password . '" where id = ' . $child_name;
             $updateResult = mysqli_query($dbConnection, $updateQuery);
 
             if (!$updateResult) {
@@ -101,7 +101,7 @@ if (isset($_POST['update'])) {
             }
         }
         if (!empty($name)) {
-            $updateQuery = 'update users set name = "' . $name . '" where id = ' . $_SESSION['sessionID'];
+            $updateQuery = 'update users set name = "' . $name . '" where id = ' . $child_name;
             $updateResult = mysqli_query($dbConnection, $updateQuery);
 
             if (!$updateResult) {
@@ -111,7 +111,7 @@ if (isset($_POST['update'])) {
             }
         }
         if (!empty($phone)) {
-            $updateQuery = 'update users set phone = ' . $phone . ' where id = ' . $_SESSION['sessionID'];
+            $updateQuery = 'update users set phone = ' . $phone . ' where id = ' . $child_name;
             $updateResult = mysqli_query($dbConnection, $updateQuery);
 
             if (!$updateResult) {
