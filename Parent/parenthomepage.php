@@ -2,19 +2,6 @@
 <html>
     <head>
         <title>Parent Homepage</title>
-            <style>
-                h1 {
-                    text-align: center;
-                }
-                section {
-                    text-align: center;
-                }
-                label {
-                    display: inline-block;
-                    width: 12%;
-                    text-align: right;
-                }
-            </style>
     </head>
 
     <body>
