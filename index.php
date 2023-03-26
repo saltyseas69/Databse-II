@@ -91,7 +91,7 @@ if(isset($_POST['submit'])) {
                     redirect("/Databse-II/Admin/admin.php");
                 } else if ($parentFound && mysqli_num_rows($parentCheckResult) > 0){
                     // ID is in parent table, jump to parent page
-                    redirect("/Databse-II/Parent/parenthomepage.php");
+                    redirect("/Databse-II/Parent/parenthome.php");
                 } else {
                     echo "<br>Unforeseen error, expected ID in user table but none was found";
                 }
