@@ -5,29 +5,19 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Parent and Child Account</title>
-    <style>
-        h1 {
-            text-align: center;
-        }
-        nav {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            display: block;
-            text-align: center;
-        }
-    </style>
+    <title>Parent Account <Details></Details></title>
 </head>
 <body>
 
-<h1>Parent and Child Account Details</h1>
+<h1>Parent Account Details</h1>
 
-<nav>
-    <a href="./parenthomepage.php">Home</a> |
-    <a href="./parentAccount.php">Account</a> |
-    <a href="../index.php">Logout</a>
-</nav>
+        <nav>
+            <a href="./parenthome.php">Home</a> |
+            <a href="./parentAccount.php">Account</a> |
+            <a href="./childofparent.php">Child Meetings</a> |
+            <a href="./childAccount.php">Child Account</a> |
+            <a href="../index.php">Logout</a>
+        </nav>
 
 <h2>Parent Account Details:</h2>
 
@@ -58,34 +48,6 @@ if (mysqli_num_rows($p_result) > 0) {
 } else {
     echo "Unexpected Error: Cannot retrieve account information";
 }
-
-echo "<br><br>Child Account Details:<br>";
-//select the child of the parent that logged in
-$childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
-//the variable defined in the last line is used to access the db
-$childof_result = $dbConnection->query($childof);
-//now fetch all the data while the rows are not empty
-    while($row = $childof_result->fetch_assoc()){
-        $child_name = $row["student_id"];
-    }
-
-//select the child name using the result of previous query
-$studentname = "SELECT * FROM users WHERE id = " . $child_name;
-$sname_result = $dbConnection->query($studentname);
-    while($row = $sname_result->fetch_assoc()){
-        $currID = $row['id'];
-        $currEmail = $row['email'];
-        $currPassword = $row['password'];
-        $currName = $row['name'];
-        $currPhone = $row['phone'];
-
-        echo "ID: $currID<br>" .
-            "Email: $currEmail<br>" .
-            "Password: $currPassword<br>" .
-            "Name: $currName<br>" .
-            "Phone: $currPhone<br>";
-    }
-
 
 
 if (isset($_POST['update'])) {

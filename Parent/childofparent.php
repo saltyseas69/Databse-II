@@ -10,7 +10,8 @@
         <nav>
             <a href="./parenthome.php">Home</a> |
             <a href="./parentAccount.php">Account</a> |
-            <a href="./childofparent.php">Student Page</a> |
+            <a href="./childofparent.php">Child Meetings</a> |
+            <a href="./childAccount.php">Child Account</a> |
             <a href="../index.php">Logout</a>
         </nav>
         
