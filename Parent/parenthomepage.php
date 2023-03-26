@@ -45,7 +45,7 @@
         <?php
             $current_meeting = "SELECT meeting_name\n" 
             . "FROM enroll, meetings\n" 
-            . "WHERE student_id = ' . $child_name . 'AND enroll.meeting_id = meetings.meeting_id";
+            . "WHERE student_id = ' $child_name . 'AND enroll.meeting_id = meetings.meeting_id";
             $result = $dbConnection->query($current_meeting);
             if ($result->num_rows > 0) {
                 // output data of each row
@@ -68,6 +68,9 @@
         </form>
 
         <?php
+        function redirect($url) {
+            header('Location: '.$url);
+        }
             $query = 'select * from meetings';
             $result = mysqli_query($dbConnection, $query);
         
@@ -101,13 +104,14 @@
                 } else {
                     $createQuery = 'insert into enroll values (' .
                         $meetingID . ', '. $child_name .')';
+                        echo "<br><br>Student Added to meeting";
                     try {
                         $result = mysqli_query($dbConnection, $createQuery);
                     } catch (mysqli_sql_exception $e) {
                         echo $e;
                     } finally {
                         if ($result) {
-                            echo "<br><br>Student Added to meeting";
+                            redirect("parenthomepage.php");
                         }
                     }
                 }
