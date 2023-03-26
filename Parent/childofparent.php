@@ -1,15 +1,16 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>Parent Homepage</title>
+        <title>Child Of Homepage</title>
     </head>
 
     <body>
         <h1>Avengers Parents Initiative</h1>
 
         <nav>
-            <a href="./parenthomepage.php">Home</a> |
+            <a href="./parenthome.php">Home</a> |
             <a href="./parentAccount.php">Account</a> |
+            <a href="./childofparent.php">Student Page</a> |
             <a href="../index.php">Logout</a>
         </nav>
         
