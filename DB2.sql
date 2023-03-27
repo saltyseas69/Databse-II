@@ -32,6 +32,18 @@ CREATE TABLE `admins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Table structure for table `assigned_assistants`
+--
+
+CREATE TABLE assigned_assistants (
+    student_id int(11) NOT NULL,
+    meeting_id int(11) NOT NULL,
+    PRIMARY KEY (student_id, meeting_id),
+    FOREIGN KEY (student_id) REFERENCES students (student_id),
+    FOREIGN KEY (meeting_id) REFERENCES meetings (meeting_id)
+);
+
+--
 -- Dumping data for table `admins`
 --
 
