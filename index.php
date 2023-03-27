@@ -85,7 +85,7 @@ if(isset($_POST['submit'])) {
 
                 if ($studentFound && mysqli_num_rows($studentCheckResult) > 0){
                     // ID is in student table, jump to student page
-                    redirect("/Databse-II/Student/studentGroup.php");
+                    redirect("/Databse-II/Student/selectGrade.php");
                 } else if ($adminFound && mysqli_num_rows($adminCheckResult) > 0){
                     // ID is in admin table, jump to admin page
                     redirect("/Databse-II/Admin/admin.php");
