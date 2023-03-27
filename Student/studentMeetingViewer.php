@@ -5,21 +5,21 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Student Meeting Viewer</title>
+    <title>Student Homepage</title>
 </head>
 <body>
 
 <h1>Student Meeting Viewer</h1>
 
 <nav>
-    <a href="./studentAccount.php">Home</a> |
+    <a href="./studentMeetingViewer.php">Home</a> |
+    <a href="./studentAccount.php">Account</a> |
     <a href="./selectGrade.php">Select Grade</a> |
     <a href="./studentJoinMeeting.php">Join</a> | 
-    <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
 </nav>
 
-<h2>Other Students In Meeting:</h2>
+<h2>Current Meeting Roster</h2>
 
 <?php
 session_start();
@@ -31,3 +31,5 @@ if (!$dbConnection) {
 
 
 ?>
+</body>
+</html>
