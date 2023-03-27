@@ -15,6 +15,7 @@
     <a href="./accountDetails.php">Account</a> |
     <a href="./meetings.php">Meetings</a> |
     <a href="./materials.php">Materials</a> |
+    <a href="./ta.php">Teaching Assistant</a> |
     <a href="../index.php">Logout</a>
 </nav>
 
