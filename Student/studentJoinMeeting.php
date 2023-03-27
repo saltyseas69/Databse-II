@@ -19,7 +19,31 @@
     <a href="../index.php">Logout</a>
 </nav>
 
+<h3>Current Meetings</h3>
+        
+        <?php
+        session_start();
+        $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
+        if (!$dbConnection) {
+            die("Connection failed: " . mysqli_connect_error());
+        }
+            $current_meeting = "SELECT meeting_name 
+            FROM enroll, meetings 
+            WHERE student_id = $_SESSION[sessionID] AND enroll.meeting_id = meetings.meeting_id";
+            $result = $dbConnection->query($current_meeting);
+            if ($result->num_rows > 0) {
+                // output data of each row
+                while($row = $result->fetch_assoc()) {
+                    echo "<br> Meeting Name: ". $row["meeting_name"];
+                }
+            } 
+            else{
+                echo "0 results";
+            }
+        ?>
+
 <h2>Join Meeting:</h2>
+<h3>Input Corresponding Meeting ID</h3>
 
 <section>
     <br><br>
@@ -48,18 +72,13 @@
 </section>
 
 <?php
-session_start();
-$dbConnection = mysqli_connect("localhost", "root", "", "DB2");
-if (!$dbConnection) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
 $query = 'select * from meetings';
             $result = mysqli_query($dbConnection, $query);
         
             if (mysqli_num_rows($result) > 0) {
         
                 while($row = mysqli_fetch_assoc($result)) {
+                    $meetingName = $row['meeting_name'];
                     $meetingID = $row['meeting_id'];
                     $date = $row['date'];
                     $time = $row['time_slot_id'];
@@ -67,15 +86,52 @@ $query = 'select * from meetings';
                     $groupID = $row['group_id'];
                     $announcement = $row['announcement'];
         
-                    echo"Meeting ID : $meetingID<br>" .
+                    echo"Meeting Name : $meetingName<br>".
+                        "Meeting ID : $meetingID<br>" .
                         "Date: $date<br>" .
                         "Time: $time<br>" .
                         "Capacity: $capacity<br>" .
-                        "Group ID: $group_id<br>" .
+                        "Group ID: $groupID<br>" .
                         "Announcement: $announcement<br>" .
                         "<br>---------------------------------------------------------<br>";
                 }
             }else{
                 echo "0 results";
             }
+
+            if(isset($_POST['join'])) {
+                $meeting_id = $_POST['meeting'];
+                if(empty($meeting_id)){
+                    echo "Please enter meeting ID";
+                }
+                else if($meeting_id = $meetingID){
+                    $createQuery = 'insert into enroll values (' . 
+                        $meeting_id . ', '. $_SESSION['sessionID']. ')'; 
+                        $addresult = mysqli_query($dbConnection, $createQuery);
+                        echo "Meeting has been successfully added.";
+            
+                }
+                else {
+                    echo "No meetings added"; 
+                }
+            }
+            
+            if(isset($_POST['delete'])) {
+                $meeting_id = $_POST['meeting'];
+                if(empty($meeting_id)){
+                    echo "Please enter meeting ID";
+                }
+                else if($meeting_id = $meetingID){
+                    $createQuery = 'delete from enroll values (' . 
+                        $meeting_id . ', '. $_SESSION['sessionID']. ')'; 
+                        $delete = mysqli_query($dbConnection, $createQuery);
+                        echo "Meeting has been successfully deleted.";
+            
+                }
+                else {
+                    echo "No meetings added"; 
+                }
+            }
 ?>
+</body>
+</html>
