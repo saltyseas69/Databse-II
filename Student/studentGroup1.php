@@ -8,11 +8,13 @@
 </head>
 <body>
     <H1>Student Group Page 1</H1>
-    <nav>
-    <a href="./selectGrade.php">Home</a> |
-    <a href="./studentAccount.php">Account Details</a> |
+<nav>
+    <a href="./studentAccount.php">Home</a> |
+    <a href="./selectGrade.php">Select Grade</a> |
+    <a href="./studentJoinMeeting.php">Join</a> | 
+    <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
-    </nav>
+</nav>
 
     <p>Students may add more than one group.</p>
     <section>
@@ -57,12 +59,11 @@ $query = 'select * from groups where grade_req = 4';
             }
 
 if(isset($_POST['add'])) {
-    $groupID = $_POST['group_id'];
     $id = $_POST['groupadd'];
     if(empty($id)){
         echo "Please select a group to add";
     }
-    else if($id == $groupID){
+    else if($id = $groupID){
         $createQuery = 'insert into member_of values (' . 
             $groupID . ', '. $_SESSION['sessionID']; 
             $addresult = mysqli_query($dbConnection, $createQuery);

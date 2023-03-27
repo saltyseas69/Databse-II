@@ -7,10 +7,10 @@
     <title>Student Homepage</title>
 </head>
 <body>
-    <H1>Student Homepage</H1>
+    <H1>Student Grade Selection</H1>
 <nav>
-    <a href="./selectGrade.php">Home</a> |
-    <a href="./studentAccount.php">Account Details</a> |
+    <a href="./studentAccount.php">Home</a> |
+    <a href="./selectGrade.php">Select Grade</a> |
     <a href="./studentJoinMeeting.php">Join</a> | 
     <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
