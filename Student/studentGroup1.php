@@ -7,12 +7,12 @@
     <title>Student Group Page 1</title>
 </head>
 <body>
-    <H1>Student Group Page 1</H1>
-<nav>
-    <a href="./studentAccount.php">Home</a> |
+    <H1>Grade 4 Student Page</H1>
+    <nav>
+    <a href="./studentMeetingViewer.php">Home</a> |
+    <a href="./studentAccount.php">Account</a> |
     <a href="./selectGrade.php">Select Grade</a> |
     <a href="./studentJoinMeeting.php">Join</a> | 
-    <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
 </nav>
 

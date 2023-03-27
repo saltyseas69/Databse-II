@@ -8,11 +8,11 @@
 </head>
 <body>
     <H1>Student Grade Selection</H1>
-<nav>
-    <a href="./studentAccount.php">Home</a> |
+    <nav>
+    <a href="./studentMeetingViewer.php">Home</a> |
+    <a href="./studentAccount.php">Account</a> |
     <a href="./selectGrade.php">Select Grade</a> |
     <a href="./studentJoinMeeting.php">Join</a> | 
-    <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
 </nav>
     <p>Groups are determined based on grade level.</p>
