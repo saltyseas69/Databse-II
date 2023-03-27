@@ -100,20 +100,61 @@
             }
 
             if(isset($_POST['add'])) {
-                $meetingID = $_POST['meetingid'];
+                $meetingID = $_POST['meetingID'];
+                $studentID = $_POST['studentID'];
                 if (empty($meetingID)) {
-                    echo "<br><br>Input correct Meeting ID";
+                    echo "<br><br>Input valid Meeting ID";
                 } else {
-                    $createQuery = 'insert into enroll values (' .
-                        $meetingID . ', '. $child_name .')';
-                        echo "<br><br>Student Added to meeting";
+            
+                    // Query meeting desired for its associate group
+                    $validateGradeQuery = 'select * from meetings where meeting_id = ' . $meetingID;
                     try {
-                        $result = mysqli_query($dbConnection, $createQuery);
+                        $validationResults = mysqli_query($dbConnection, $validateGradeQuery);
                     } catch (mysqli_sql_exception $e) {
                         echo $e;
-                    } finally {
-                        if ($result) {
-                            redirect("parenthomepage.php");
+                        die();
+                    }
+                    $meetingCheckForValidation = mysqli_fetch_assoc($validationResults);
+                    $groupIDToCheckForValidation =  $meetingCheckForValidation['group_id'];
+            
+                    // Query associated group for its grade requirement
+                    $groupIDValidationQuery = 'select grade_req from groups where group_id = ' . $groupIDToCheckForValidation;
+                    try {
+                        $groupIDValidationResult = mysqli_query($dbConnection, $groupIDValidationQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo $e;
+                        die();
+                    }
+            
+                    $gradeReqRow = mysqli_fetch_assoc($groupIDValidationResult);
+                    $gradeReq = $gradeReqRow['grade_req'];
+            
+                    // Query student for their grade
+                    $studentGradeQuery = 'select grade from students where student_id = ' . $studentID;
+                    try {
+                        $studentGradeResult = mysqli_query($dbConnection, $studentGradeQuery);
+                    } catch (Exception $e) {
+                        echo $e;
+                        die();
+                    }
+            
+                    $studentGradeRow = mysqli_fetch_assoc($studentGradeResult);
+                    $studentGrade = $studentGradeRow['grade'];
+            
+                    // Verify student can be added to meeting
+                    if ($gradeReq > $studentGrade) {
+                        echo "Student does not meet grade requirement";
+                    } else {
+                        $addQuery = 'insert into enroll values (' .
+                            $meetingID . ', '. $studentID .')';
+                        try {
+                            $result = mysqli_query($dbConnection, $addQuery);
+                        } catch (mysqli_sql_exception $e) {
+                            echo $e;
+                        } finally {
+                            if ($result) {
+                                echo "<br><br>Student Added to meeting";
+                            }
                         }
                     }
                 }
