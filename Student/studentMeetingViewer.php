@@ -12,8 +12,10 @@
 <h1>Student Meeting Viewer</h1>
 
 <nav>
-    <a href="./selectGrade.php">Home</a> |
+    <a href="./studentAccount.php">Home</a> |
+    <a href="./selectGrade.php">Select Grade</a> |
     <a href="./studentJoinMeeting.php">Join</a> | 
+    <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
 </nav>
 
