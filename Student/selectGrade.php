@@ -10,7 +10,8 @@
     <H1>Student Homepage</H1>
 <nav>
     <a href="./selectGrade.php">Home</a> |
-    <a href="./studentAccount.php">Account Details</a> 
+    <a href="./studentAccount.php">Account Details</a> |
+    <a href="./studentJoinMeeting.php">Join</a> | 
     <a href="./studentMeetingViewer.php">Meeting Viewer</a> |
     <a href="../index.php">Logout</a>
 </nav>
@@ -31,7 +32,7 @@
 
 <?php
 
-
+session_start();
 $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
 if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());

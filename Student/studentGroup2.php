@@ -29,7 +29,7 @@
 </section>
 
 <?php
-
+session_start();
 $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
 if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());
@@ -57,15 +57,19 @@ $query = 'select * from groups where grade_req = 5';
             }
 
 if(isset($_POST['add'])) {
-    $groupID = $_POST['groupID'];
+    $groupID = $_POST['group_id'];
     $id = $_POST['groupadd'];
-    if(empty($groupID)){
+    if(empty($id)){
         echo "Please select a group to add";
     }
     else if($id == $groupID){
-        $createQuery = 'insert into member_of values (' . 
-            $groupID . ', '. $_SESSION['sessionID']; 
-            echo "Group has been successfully added.";
+        $createQuery = 'insert into member_of values (' . $groupID . ', '. $_SESSION['sessionID'] . ')'; 
+        $addresult = mysqli_query($dbConnection, $createQuery);
+
+        echo "Group has been successfully added.";
+    }
+    else {
+        echo "No classes added"; 
     }
 }
 

@@ -13,6 +13,7 @@
 
 <nav>
     <a href="./selectGrade.php">Home</a> |
+    <a href="./studentJoinMeeting.php">Join</a> | 
     <a href="../index.php">Logout</a>
 </nav>
 
@@ -25,6 +26,6 @@ if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-$query = "select * from students where id = " . $_SESSION['sessionID'];
-$result = mysqli_query($dbConnection, $query);
+
+
 ?>
