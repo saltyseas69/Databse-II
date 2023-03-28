@@ -112,7 +112,8 @@ if(isset($_POST['create'])) {
             '"' . $createType . '", ' .
             '"' . $createUrl . '", ' .
             '"' . $createNotes . '", ' .
-            $createAssignedDate . ')';
+            'DATE "' . $createAssignedDate . '")';
+        echo $createQuery;
         try {
             $result = mysqli_query($dbConnection, $createQuery);
         } catch (mysqli_sql_exception $e) {
@@ -187,7 +188,9 @@ if(isset($_POST['update'])) {
                 }
             }
             if (!empty($updateAssignedDate)) {
-                $updateQuery = 'update material set assigned_date = "' . $updateAssignedDate . '" where material_id = ' . $udpateMaterialId;
+                $updateQuery = 'update material 
+                                set assigned_date = DATE "' . $updateAssignedDate . '"
+                                where material_id = ' . $udpateMaterialId;
                 try {
                     $result = mysqli_query($dbConnection, $updateQuery);
                 } catch (mysqli_sql_exception $e) {
