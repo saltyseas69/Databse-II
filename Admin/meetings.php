@@ -297,7 +297,7 @@ if(isset($_POST['verify'])) {
                 } catch (mysqli_sql_exception $e) {
                     echo $e;
                 }
-                echo "Removed Meeting, affected Enroll and Meeting tables.";
+                echo "<br>Removed Meeting, affected Enroll and Meeting tables.<br>";
             }
         }
     } else {
