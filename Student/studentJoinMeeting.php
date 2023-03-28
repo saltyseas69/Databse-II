@@ -73,8 +73,17 @@
 
 <?php
 $query = 'select * from meetings';
+$studentQuery = 'SELECT student_id
+                FROM enroll, meetings
+                WHERE enroll.meeting_id =  meetings.meeting_id';
+            $studentResult = mysqli_query($dbConnection, $studentQuery);
+$studentQuery1 = 'SELECT name, email
+                FROM users, students
+                WHERE users.id = '. $studentResult  ;
+                $studentResult1 = mysqli_query($dbConnection, $studentQuery1);
             $result = mysqli_query($dbConnection, $query);
-        
+            
+            
             if (mysqli_num_rows($result) > 0) {
         
                 while($row = mysqli_fetch_assoc($result)) {
@@ -85,6 +94,8 @@ $query = 'select * from meetings';
                     $capacity = $row['capacity'];
                     $groupID = $row['group_id'];
                     $announcement = $row['announcement'];
+                    $studentName = $row['name'];
+                    $studentEmail = $row['email'];
         
                     echo"Meeting Name : $meetingName<br>".
                         "Meeting ID : $meetingID<br>" .
@@ -93,6 +104,8 @@ $query = 'select * from meetings';
                         "Capacity: $capacity<br>" .
                         "Group ID: $groupID<br>" .
                         "Announcement: $announcement<br>" .
+                        "Students in Meeting :  $studentName ". 
+
                         "<br>---------------------------------------------------------<br>";
                 }
             }else{

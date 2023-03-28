@@ -30,35 +30,38 @@
             $current_meeting = "SELECT meeting_name 
             FROM enroll, meetings 
             WHERE student_id = $_SESSION[sessionID] AND enroll.meeting_id = meetings.meeting_id";
+            $meet_result = $dbConnection->query($current_meeting);
 
-            //find the student id of every other student in the same meetings as logged in user
-            $current_roster = "SELECT student_id
-            FROM enroll
-            GROUP BY meeting_id";
+        //     //find the student id of every other student in the same meetings as logged in user
+        //     $current_roster = "SELECT student_id
+        //     FROM enroll, meetings
+        //     WHERE meeting_id = $meet_result ";
+         
 
             //use previous student ids to get user name and emails
-            $other_students = "SELECT name, email
-            FROM users, students
-            WHERE id.users = student_id.student";
+         //   $other_students = "SELECT name, email
+         //   FROM users, students
+           // WHERE id.users = student_id.student";
 
 
-            $meet_result = $dbConnection->query($current_meeting);
-            $rost_result = $dbConnection->query($current_roster);
+
+            //$rost_result = $dbConnection->query($current_roster);
+          //  $other = $dbConnection->query($other_students);
             if ($meet_result->num_rows > 0) {
                 // output data of each row
                 while($row = $meet_result->fetch_assoc()) {
-                    // echo "<br> Meeting Name: ". $row["meeting_name"];
+                     echo "<br> Meeting Names: ". $row["meeting_name"];
                 }
             } 
             else{
                 echo "0 results";
             }
-            echo "<br>";
-            if ($rost_result->num_rows > 0){
-                while($row = $rost_result->fetch_assoc()){
-                    echo "<br> Roster: ". $row["student_id"];
-                }
-            }
+            // echo "<br>";
+            // if ($other->num_rows > 0){
+            //     while($row = $other->fetch_assoc()){
+            //         echo "<br> Roster: ". $row["name"] . $row["email"];
+            //     }
+            // }
 
 
 ?>
