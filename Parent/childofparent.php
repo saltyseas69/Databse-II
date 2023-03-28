@@ -62,12 +62,12 @@
 
         <h3>Add Child to Meetings</h3>
         <b>Type in corresponding Meeting ID to add student to meeting</b>
-        
         <form action="" method="post">
             <label for="meetingid">Meeting ID: </label>
             <input type="text" id="meetingid" name="meetingid">
             <input type="submit" name="add" value="Add"/>
         </form>
+        <br><br>
 
         <?php
         function redirect($url) {
@@ -100,8 +100,8 @@
             }
 
             if(isset($_POST['add'])) {
-                $meetingID = $_POST['meetingID'];
-                $studentID = $_POST['studentID'];
+                $meetingID = $_POST['meetingid'];
+                $studentID = $child_name;
                 if (empty($meetingID)) {
                     echo "<br><br>Input valid Meeting ID";
                 } else {
@@ -154,6 +154,7 @@
                         } finally {
                             if ($result) {
                                 echo "<br><br>Student Added to meeting";
+                                redirect('childofparent.php');
                             }
                         }
                     }
