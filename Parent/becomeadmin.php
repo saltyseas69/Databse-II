@@ -19,7 +19,7 @@
             <a href="../index.php">Logout</a>
         </nav>
         <br>
-        <a href="./index.php">Account Login</a>
+        <a href="../index.php">Account Login</a>
         <br><br>
 <b>Enter Admin credentials and click "Verify"</b>
 
@@ -90,9 +90,7 @@ if(isset($_POST['register'])) {
 
         if (!$result) {
             echo "<br>Could not insert into User table<br>";
-        }else if($child_name > 0){
-            echo "<br> Could not register as Admin since your child is currently enrolled";
-        } 
+        }
         else {
             echo "<br>Successfuly inserted into User table<br>";
 
@@ -100,11 +98,9 @@ if(isset($_POST['register'])) {
                 case "admins":
                     $query = 'insert into admins values (' . $id .')';
                     $result = mysqli_query($dbConnection, $query);
-                    if (!$result) {
+                    if (!$result && $child_name > 0) {
                         echo "<br>Could not insert into Admin table<br>";
-                    }else if($child_name > 0){
-                        echo "<br> Could not register as Admin since your child is currently enrolled";
-                    } 
+                    }
                     else {
                         echo "<br>Successfuly inserted into Admin table<br>";
                     }

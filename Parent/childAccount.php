@@ -54,6 +54,7 @@ $childof_result = $dbConnection->query($childof);
     }
 
 //select the child name using the result of previous query
+if($child_name > 0){
 $studentname = "SELECT * FROM users WHERE id = " . $child_name;
 $sname_result = $dbConnection->query($studentname);
     while($row = $sname_result->fetch_assoc()){
@@ -69,6 +70,9 @@ $sname_result = $dbConnection->query($studentname);
             "Name: $currName<br>" .
             "Phone: $currPhone<br>";
     }
+}else{
+    echo "<br>No info to display";
+}
 
 
 
