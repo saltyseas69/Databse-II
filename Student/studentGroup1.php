@@ -9,12 +9,13 @@
 <body>
     <H1>Grade 4 Student Page</H1>
     <nav>
-    <a href="./studentMeetingViewer.php">Home</a> |
-    <a href="./studentAccount.php">Account</a> |
-    <a href="./selectGrade.php">Select Grade</a> |
-    <a href="./studentJoinMeeting.php">Join</a> | 
-    <a href="../index.php">Logout</a>
-</nav>
+        <a href="./studentMeetingViewer.php">Home</a> |
+        <a href="./studentAccount.php">Account</a> |
+        <a href="./selectGrade.php">Select Grade</a> |
+        <a href="./studentJoinMeeting.php">Join</a> |
+        <a href="./ta.php">Teacher Assistant</a> |
+        <a href="../index.php">Logout</a>
+    </nav>
 
     <p>Students may add more than one group.</p>
     <section>

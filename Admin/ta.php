@@ -69,10 +69,8 @@ if (isset($_POST['assign'])) {
         // Validate that the student is not enrolled in the class, or a TA already
         $studentValidationQuery = 'select count(*) as studentCount from enroll 
                                 where student_id = ' . $studentID . ' and meeting_id = ' . $meetingID;
-        echo '<br>' . $studentValidationQuery;
         $studentValidationResult = mysqli_query($dbConnection, $studentValidationQuery);
         $studentRow = mysqli_fetch_assoc($studentValidationResult);
-        echo '<br>' . $studentRow['studentCount'];
         if ($studentRow['studentCount'] != 0) {
             echo '<br><br>Student is enrolled in class, unable to add.';
         } else {
