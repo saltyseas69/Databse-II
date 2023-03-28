@@ -28,19 +28,69 @@
         if (!$dbConnection) {
             die("Connection failed: " . mysqli_connect_error());
         }
-            $current_meeting = "SELECT meeting_name 
-            FROM enroll, meetings 
-            WHERE student_id = $_SESSION[sessionID] AND enroll.meeting_id = meetings.meeting_id";
-            $result = $dbConnection->query($current_meeting);
-            if ($result->num_rows > 0) {
-                // output data of each row
-                while($row = $result->fetch_assoc()) {
-                    echo "<br> Meeting Name: ". $row["meeting_name"];
+
+        $currentMeetingsQuery = 'select * from enroll where student_id = ' . $_SESSION['sessionID'];
+        $currentMeetingsResult = $dbConnection->query($currentMeetingsQuery);
+
+        if($currentMeetingsResult->num_rows > 0) {
+            while ($row = $currentMeetingsResult->fetch_assoc()) {
+                $currentMeetingID = $row['meeting_id'];
+
+                $meetingDataQuery = 'select * from meetings where meeting_id = ' . $currentMeetingID;
+                $meetingDataResult = $dbConnection->query($meetingDataQuery);
+
+                if ($meetingDataResult->num_rows > 0) {
+                    while ($dataRow = $meetingDataResult->fetch_assoc()) {
+                        $meetingName = $dataRow['meeting_name'];
+                        $meetingID = $dataRow['meeting_id'];
+                        $date = $dataRow['date'];
+                        $time = $dataRow['time_slot_id'];
+                        $capacity = $dataRow['capacity'];
+                        $groupID = $dataRow['group_id'];
+                        $announcement = $dataRow['announcement'];
+
+
+                        echo
+                            "<h4>--------Meeting Details----------</h4>" .
+                            "Meeting Name : $meetingName<br>".
+                            "Meeting ID : $meetingID<br>" .
+                            "Date: $date<br>" .
+                            "Time: $time<br>" .
+                            "Capacity: $capacity<br>" .
+                            "Group ID: $groupID<br>" .
+                            "Announcement: $announcement<br>";
+
+                        $enrolledStudentsQuery = 'select * 
+                                                from users 
+                                                where id in (
+                                                    select student_id
+                                                    from enroll
+                                                    where meeting_id = ' . $currentMeetingID . '
+                                                )';
+                        try {
+                            $enrolledStudentsResult = $dbConnection->query($enrolledStudentsQuery);
+                        } catch (Exception $e) {
+                            echo $e;
+                        }
+
+                        if ($enrolledStudentsResult->num_rows > 0) {
+                            echo "<h4>Enrolled Students</h4>";
+                            while ($enrolledRow = $enrolledStudentsResult->fetch_assoc()) {
+                                echo "Name: " . $enrolledRow['name'];
+                                echo "<br>Email: " . $enrolledRow['email'] . '<br><br>';
+                            }
+                        } else {
+                            echo "No other students enrolled";
+                        }
+
+                    }
+                } else {
+                    echo "Unexpected error: Meeting from enroll table does not exist";
                 }
-            } 
-            else{
-                echo "0 results";
             }
+        } else {
+            echo "Not enrolled in any meetings";
+        }
         ?>
 
 <h2>Join Meeting:</h2>
