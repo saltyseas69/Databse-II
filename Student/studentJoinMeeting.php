@@ -103,11 +103,20 @@
         <form action="" method="post">
         <input type="text" id="joinmeet" name="joinmeet">
         <br><br>
-        <input type="submit" name="join" value="Join">
-        <br><br>
     </form>
 </section>
+<div>
+    <h3>Verify Meetings</h3>
+    <p>You must join a meeting by Thursday. Input today's date for validation</p>
 
+    <form action="" method="post">
+        <label for="date">Current Date(yyyy-mm-dd): </label>
+        <input type="text" id="verificationDate" name="verificationDate">
+        <br><br>
+        <input type="submit" name="verify" value="Verify and Join">
+    </form>
+</div>
+<p>------------------------------------------------------------------<p>
 <section>
     <br><br>
     <form action="" method="post">
@@ -159,6 +168,9 @@
             if(isset($_POST['join'])) {
                 $meetingID = $_POST['joinmeet'];
                 $studentID = $_SESSION['sessionID'];
+                if(empty('validate')){
+                    echo "<br>Input date to join meeting";
+                }
                 if (empty($meetingID)) {
                     echo "<br><br>Input valid Meeting ID";
                 } else {
