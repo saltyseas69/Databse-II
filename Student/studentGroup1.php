@@ -65,7 +65,7 @@ if(isset($_POST['add'])) {
     }
     else if($id = $groupID){
         $createQuery = 'insert into member_of values (' . 
-            $groupID . ', '. $_SESSION['sessionID']; 
+            $groupID . ', '. $_SESSION['sessionID'].')'; 
             $addresult = mysqli_query($dbConnection, $createQuery);
             echo "Group has been successfully added.";
 
