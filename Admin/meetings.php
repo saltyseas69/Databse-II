@@ -20,35 +20,37 @@
 </nav>
 
 <br><br>
+
 <div class="row">
-    <div class="column">
-        <form action="" method="post">
-            <label for="id">Meeting Id: </label>
-            <input type="text" id="id" name="id">
-            <br><br>
-            <label for="name">Meeting Name: </label>
-            <input type="text" id="name" name="name">
-            <br><br>
-            <label for="date">Meeting Date(yyyy-mm-dd): </label>
-            <input type="text" id="date" name="date">
-            <br><br>
-            <label for="timeSlotId">Time Slot ID: </label>
-            <input type="text" id="timeSlotId" name="timeSlotId">
-            <br><br>
-            <label for="capacity">Capacity: </label>
-            <input type="text" id="capacity" name="capacity">
-            <br><br>
-            <label for="groupId">Group ID: </label>
-            <input type="text" id="groupId" name="groupId">
-            <br><br>
-            <label for="announcement">Announcement: </label>
-            <input type="text" id="announcement" name="announcement">
-            <br><br>
-            <input type="submit" name="create" value="Create">
-            <input type="submit" name="update" value="Update">
-            <input type="submit" name="delete" value="Delete">
-        </form>
-    </div>
+    <p>------------------------------------------------</p>
+    <h3>Create, Update, Delete Meeting</h3>
+
+    <form action="" method="post">
+        <label for="id">Meeting Id: </label>
+        <input type="text" id="id" name="id">
+        <br><br>
+        <label for="name">Meeting Name: </label>
+        <input type="text" id="name" name="name">
+        <br><br>
+        <label for="date">Meeting Date(yyyy-mm-dd): </label>
+        <input type="text" id="date" name="date">
+        <br><br>
+        <label for="timeSlotId">Time Slot ID: </label>
+        <input type="text" id="timeSlotId" name="timeSlotId">
+        <br><br>
+        <label for="capacity">Capacity: </label>
+        <input type="text" id="capacity" name="capacity">
+        <br><br>
+        <label for="groupId">Group ID: </label>
+        <input type="text" id="groupId" name="groupId">
+        <br><br>
+        <label for="announcement">Announcement: </label>
+        <input type="text" id="announcement" name="announcement">
+        <br><br>
+        <input type="submit" name="create" value="Create">
+        <input type="submit" name="update" value="Update">
+        <input type="submit" name="delete" value="Delete">
+    </form>
 </div>
 
 <br><br>
@@ -312,54 +314,65 @@ if(isset($_POST['add'])) {
         echo "<br><br>Input valid Meeting ID";
     } else {
 
-        // Query meeting desired for its associate group
-        $validateGradeQuery = 'select * from meetings where meeting_id = ' . $meetingID;
-        try {
-            $validationResults = mysqli_query($dbConnection, $validateGradeQuery);
-        } catch (mysqli_sql_exception $e) {
-            echo $e;
-            die();
-        }
-        $meetingCheckForValidation = mysqli_fetch_assoc($validationResults);
-        $groupIDToCheckForValidation =  $meetingCheckForValidation['group_id'];
+        // Query meeting to determine current capacity
+        $capacityQuery = 'select count(*) as currentCapacity 
+                                    from enroll 
+                                    where meeting_id = ' . $meetingID;
+        $capacityResult = $dbConnection->query($capacityQuery);
 
-        // Query associated group for its grade requirement
-        $groupIDValidationQuery = 'select grade_req from groups where group_id = ' . $groupIDToCheckForValidation;
-        try {
-            $groupIDValidationResult = mysqli_query($dbConnection, $groupIDValidationQuery);
-        } catch (mysqli_sql_exception $e) {
-            echo $e;
-            die();
-        }
-
-        $gradeReqRow = mysqli_fetch_assoc($groupIDValidationResult);
-        $gradeReq = $gradeReqRow['grade_req'];
-
-        // Query student for their grade
-        $studentGradeQuery = 'select grade from students where student_id = ' . $studentID;
-        try {
-            $studentGradeResult = mysqli_query($dbConnection, $studentGradeQuery);
-        } catch (Exception $e) {
-            echo $e;
-            die();
-        }
-
-        $studentGradeRow = mysqli_fetch_assoc($studentGradeResult);
-        $studentGrade = $studentGradeRow['grade'];
-
-        // Verify student can be added to meeting
-        if ($gradeReq > $studentGrade) {
-            echo "Student does not meet grade requirement";
+        $capacityRow = $capacityResult->fetch_assoc();
+        if ($capacityRow['currentCapacity'] > 5) {
+            echo "Meeting is at capacity, cannot join";
         } else {
-            $addQuery = 'insert into enroll values (' .
-                $meetingID . ', '. $studentID .')';
+            // Query meeting desired for its associate group
+            $validateGradeQuery = 'select * from meetings where meeting_id = ' . $meetingID;
             try {
-                $result = mysqli_query($dbConnection, $addQuery);
+                $validationResults = mysqli_query($dbConnection, $validateGradeQuery);
             } catch (mysqli_sql_exception $e) {
                 echo $e;
-            } finally {
-                if ($result) {
-                    echo "<br><br>Student Added to meeting";
+                die();
+            }
+            $meetingCheckForValidation = mysqli_fetch_assoc($validationResults);
+            $groupIDToCheckForValidation = $meetingCheckForValidation['group_id'];
+
+            // Query associated group for its grade requirement
+            $groupIDValidationQuery = 'select grade_req from groups where group_id = ' . $groupIDToCheckForValidation;
+            try {
+                $groupIDValidationResult = mysqli_query($dbConnection, $groupIDValidationQuery);
+            } catch (mysqli_sql_exception $e) {
+                echo $e;
+                die();
+            }
+
+            $gradeReqRow = mysqli_fetch_assoc($groupIDValidationResult);
+            $gradeReq = $gradeReqRow['grade_req'];
+
+            // Query student for their grade
+            $studentGradeQuery = 'select grade from students where student_id = ' . $studentID;
+            try {
+                $studentGradeResult = mysqli_query($dbConnection, $studentGradeQuery);
+            } catch (Exception $e) {
+                echo $e;
+                die();
+            }
+
+            $studentGradeRow = mysqli_fetch_assoc($studentGradeResult);
+            $studentGrade = $studentGradeRow['grade'];
+
+            // Verify student can be added to meeting
+            if ($gradeReq > $studentGrade) {
+                echo "Student does not meet grade requirement";
+            } else {
+                $addQuery = 'insert into enroll values (' .
+                    $meetingID . ', ' . $studentID . ')';
+                try {
+                    $result = mysqli_query($dbConnection, $addQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Student Added to meeting";
+                    }
                 }
             }
         }
