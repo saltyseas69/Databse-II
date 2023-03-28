@@ -21,54 +21,36 @@
 
 <br><br>
 
-<div>
-    <form action="" method="post">
-        <input type="submit" name="verify" value="Verify Meetings">
-    </form>
-</div>
-
-<br><br>
-
-<div>
-    <form action="" method="post">
-        <label for="meetingId">Meeting Id: </label>
-        <input type="text" id="meetingId" name="meetingId">
-        <br><br>
-        <label for="studentId">Meeting Id: </label>
-        <input type="text" id="studentId" name="studentId">
-        <br><br>
-    </form>
-</div>
-
 <div class="row">
-    <div class="column">
-        <form action="" method="post">
-            <label for="id">Meeting Id: </label>
-            <input type="text" id="id" name="id">
-            <br><br>
-            <label for="name">Meeting Name: </label>
-            <input type="text" id="name" name="name">
-            <br><br>
-            <label for="date">Meeting Date(yyyy-mm-dd): </label>
-            <input type="text" id="date" name="date">
-            <br><br>
-            <label for="timeSlotId">Time Slot ID: </label>
-            <input type="text" id="timeSlotId" name="timeSlotId">
-            <br><br>
-            <label for="capacity">Capacity: </label>
-            <input type="text" id="capacity" name="capacity">
-            <br><br>
-            <label for="groupId">Group ID: </label>
-            <input type="text" id="groupId" name="groupId">
-            <br><br>
-            <label for="announcement">Announcement: </label>
-            <input type="text" id="announcement" name="announcement">
-            <br><br>
-            <input type="submit" name="create" value="Create">
-            <input type="submit" name="update" value="Update">
-            <input type="submit" name="delete" value="Delete">
-        </form>
-    </div>
+    <p>------------------------------------------------</p>
+    <h3>Create, Update, Delete Meeting</h3>
+
+    <form action="" method="post">
+        <label for="id">Meeting Id: </label>
+        <input type="text" id="id" name="id">
+        <br><br>
+        <label for="name">Meeting Name: </label>
+        <input type="text" id="name" name="name">
+        <br><br>
+        <label for="date">Meeting Date(yyyy-mm-dd): </label>
+        <input type="text" id="date" name="date">
+        <br><br>
+        <label for="timeSlotId">Time Slot ID: </label>
+        <input type="text" id="timeSlotId" name="timeSlotId">
+        <br><br>
+        <label for="capacity">Capacity: </label>
+        <input type="text" id="capacity" name="capacity">
+        <br><br>
+        <label for="groupId">Group ID: </label>
+        <input type="text" id="groupId" name="groupId">
+        <br><br>
+        <label for="announcement">Announcement: </label>
+        <input type="text" id="announcement" name="announcement">
+        <br><br>
+        <input type="submit" name="create" value="Create">
+        <input type="submit" name="update" value="Update">
+        <input type="submit" name="delete" value="Delete">
+    </form>
 </div>
 
 <br><br>
