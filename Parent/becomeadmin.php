@@ -21,7 +21,7 @@
         <br>
         <a href="./index.php">Account Login</a>
         <br><br>
-<b>Enter credentials to verify</b>
+<b>Enter Admin credentials and click "Verify"</b>
 
 <section>
     <br>
@@ -51,15 +51,27 @@
             <option value="parents">Parent</option>
         </select>
         <br><br>
-        <input type="submit" name="register" value="Register">
+        <input type="submit" name="register" value="Verify">
     </form>
 </section>
 
 <?php
+session_start();
 $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
 if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());
 }
+$parent = "select * from users where id = " . $_SESSION['sessionID'];
+$p_result = mysqli_query($dbConnection, $parent);
+
+//select the child of the parent that logged in
+$childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
+//the variable defined in the last line is used to access the db
+$childof_result = $dbConnection->query($childof);
+//now fetch all the data while the rows are not empty
+    while($row = $childof_result->fetch_assoc()){
+        $child_name = $row["student_id"];
+    }
 
 if(isset($_POST['register'])) {
     $id = $_POST['id'];
@@ -78,7 +90,10 @@ if(isset($_POST['register'])) {
 
         if (!$result) {
             echo "<br>Could not insert into User table<br>";
-        } else {
+        }else if($child_name > 0){
+            echo "<br> Could not register as Admin since your child is currently enrolled";
+        } 
+        else {
             echo "<br>Successfuly inserted into User table<br>";
 
             switch ($type) {
@@ -87,7 +102,10 @@ if(isset($_POST['register'])) {
                     $result = mysqli_query($dbConnection, $query);
                     if (!$result) {
                         echo "<br>Could not insert into Admin table<br>";
-                    } else {
+                    }else if($child_name > 0){
+                        echo "<br> Could not register as Admin since your child is currently enrolled";
+                    } 
+                    else {
                         echo "<br>Successfuly inserted into Admin table<br>";
                     }
                     break;
