@@ -122,21 +122,23 @@
         }
         ?>
 
-<h2>Join Meeting:</h2>
-<h3>Input Corresponding Meeting ID</h3>
+<h2>Join and Verify Meetings:</h2>
 
 <section>
-    <br><br>
     <form action="" method="post">
+        <p><b>Input Valid Meeting ID to join</b></p>
         <label for="group">Select Meeting to Join: </label>
         <form action="" method="post">
         <input type="text" id="joinmeet" name="joinmeet">
         <br><br>
-        <input type="submit" name="join" value="Join">
+        <p><b>You must join a meeting by Thursday. Input today's date for validation</b></p>
+        <label for="date">Current Date(yyyy-mm-dd): </label>
+        <input type="text" id="verificationDate" name="verificationDate">
         <br><br>
+        <input type="submit" name="verify" value="Verify and Join">
     </form>
 </section>
-
+<p>------------------------------------------------------------------<p>
 <section>
     <br><br>
     <form action="" method="post">
@@ -185,9 +187,21 @@
             }else{
                 echo "0 results";
             }
-            if(isset($_POST['join'])) {
+            if(isset($_POST['verify'])) {
                 $meetingID = $_POST['joinmeet'];
                 $studentID = $_SESSION['sessionID'];
+                $verify = date_create($_POST['verificationDate']);
+                if(empty($verify)){
+                    echo "<br>Input date to join meeting<br>";
+                }
+                else{
+                    $meeting_date = 'SELECT date FROM meetings WHERE' . $meetingID .'= meeting_id';
+                    $meeting_date_result = mysqli_query($dbConnection, $meeting_date);
+
+                    $weekendDate = date_add($verificationDate, date_interval_create_from_date_string("2 days"));
+                    
+
+                }
                 if (empty($meetingID)) {
                     echo "<br><br>Input valid Meeting ID";
                 } else {
@@ -264,7 +278,6 @@
                 } else {
                     $deleteQuery = 'delete from enroll 
                                 where student_id = ' . $studentID .' and meeting_id = ' . $meetingID;
-                    echo $deleteQuery;
                     try {
                         $result = mysqli_query($dbConnection, $deleteQuery);
                     } catch (mysqli_sql_exception $e) {

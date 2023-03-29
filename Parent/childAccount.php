@@ -16,6 +16,7 @@
             <a href="./parentAccount.php">Account</a> |
             <a href="./childofparent.php">Child Meetings</a> |
             <a href="./childAccount.php">Child Account</a> |
+            <a href="./becomeadmin.php">Admin Registration</a> |
             <a href="../index.php">Logout</a>
         </nav>
 
@@ -53,6 +54,7 @@ $childof_result = $dbConnection->query($childof);
     }
 
 //select the child name using the result of previous query
+if($child_name > 0){
 $studentname = "SELECT * FROM users WHERE id = " . $child_name;
 $sname_result = $dbConnection->query($studentname);
     while($row = $sname_result->fetch_assoc()){
@@ -68,6 +70,9 @@ $sname_result = $dbConnection->query($studentname);
             "Name: $currName<br>" .
             "Phone: $currPhone<br>";
     }
+}else{
+    echo "<br>No info to display";
+}
 
 
 
