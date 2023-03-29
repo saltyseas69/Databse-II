@@ -48,6 +48,9 @@
         <label for="date">Assigned Date(yyyy-mm-dd): </label>
         <input type="text" id="date" name="date">
         <br><br>
+        <label for="currDate">Current Date(yyyy-mm-dd): </label>
+        <input type="text" id="currDate" name="currDate">
+        <br><br>
         <input type="submit" name="create" value="Create">
         <input type="submit" name="update" value="Update">
         <input type="submit" name="delete" value="Delete">
@@ -61,6 +64,21 @@
 $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
 if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());
+}
+
+function verifyMaterialAdd($dbConnection, $createMeetingId, $currDate) {
+    $verifyMaterialQuery = 'select * from meetings where meeting_id = ' . $createMeetingId;
+    try {
+        $verifyMaterialResult = mysqli_query($dbConnection, $verifyMaterialQuery);
+    } catch (Exception $e) {
+        echo $e;
+        die();
+    }
+    $verifyRow = $verifyMaterialResult->fetch_assoc();
+    $verifyDate = date_create($verifyRow['date']);
+
+    return $currDate < $verifyDate;
+
 }
 
 $query = 'select * from material';
@@ -99,24 +117,29 @@ if(isset($_POST['create'])) {
     $createUrl = $_POST['url'];
     $createNotes = $_POST['notes'];
     $createAssignedDate = $_POST['date'];
+    $currDate = date_create($_POST['currDate']);
 
     if (empty($createMaterialId) || empty($createMeetingId) || empty($createTitle) || empty($createAuthor) ||
-        empty($createType) || empty($createUrl) || empty($createNotes) || empty($createAssignedDate)) {
+        empty($createType) || empty($createUrl) || empty($createNotes) || empty($createAssignedDate) || empty($currDate)) {
         echo "<br><br>Data required in all fields";
     } else {
-        $createQuery = 'insert into material values (' .
-            $createMaterialId . ', ' .
-            $createMeetingId . ', ' .
-            '"' . $createTitle . '", ' .
-            '"' . $createAuthor . '", ' .
-            '"' . $createType . '", ' .
-            '"' . $createUrl . '", ' .
-            '"' . $createNotes . '", ' .
-            'DATE "' . $createAssignedDate . '")';
-        try {
-            $result = mysqli_query($dbConnection, $createQuery);
-        } catch (mysqli_sql_exception $e) {
-            echo $e;
+        if (verifyMaterialAdd($dbConnection, $createMeetingId, $currDate)) {
+            $createQuery = 'insert into material values (' .
+                $createMaterialId . ', ' .
+                $createMeetingId . ', ' .
+                '"' . $createTitle . '", ' .
+                '"' . $createAuthor . '", ' .
+                '"' . $createType . '", ' .
+                '"' . $createUrl . '", ' .
+                '"' . $createNotes . '", ' .
+                'DATE "' . $createAssignedDate . '")';
+            try {
+                $result = mysqli_query($dbConnection, $createQuery);
+            } catch (mysqli_sql_exception $e) {
+                echo $e;
+            }
+        } else {
+            echo "Unable to add material to a past meeting";
         }
     }
 }
