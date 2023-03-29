@@ -65,10 +65,10 @@ if (!$dbConnection) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-function verifyAssignmentAsTA($dbConnection) {
+function verifyAssignmentAsTA($dbConnection, $meetingID) {
     $verificationQuery = 'select count(*) as verifyCount 
-from assigned_assistants 
-where student_id = ' . $_SESSION['sessionID'];
+                        from assigned_assistants 
+                        where student_id = ' . $_SESSION['sessionID'] . ' and meeting_id = ' . $meetingID;
 
     try {
         $verificationResult = mysqli_query($dbConnection, $verificationQuery);
@@ -128,7 +128,7 @@ if(isset($_POST['create'])) {
     $createNotes = $_POST['notes'];
     $createAssignedDate = $_POST['date'];
 
-    if (verifyAssignmentAsTA($dbConnection)) {
+    if (verifyAssignmentAsTA($dbConnection, $createMeetingId)) {
         if (empty($createMaterialId) || empty($createMeetingId) || empty($createTitle) || empty($createAuthor) ||
             empty($createType) || empty($createUrl) || empty($createNotes) || empty($createAssignedDate)) {
             echo "<br><br>Data required in all fields";
@@ -164,7 +164,7 @@ if(isset($_POST['update'])) {
     $updateNotes = $_POST['notes'];
     $updateAssignedDate = $_POST['date'];
 
-    if (verifyAssignmentAsTA($dbConnection)) {
+    if (verifyAssignmentAsTA($dbConnection, $updateMeetingId)) {
         if (empty($udpateMaterialId)) {
             echo "<br><br>Material ID required for updates";
         } else {
@@ -239,10 +239,11 @@ if(isset($_POST['update'])) {
 
 if(isset($_POST['delete'])) {
     $deleteMaterialId = $_POST['materialID'];
+    $deleteMeetingId = $_POST['meetingID'];
 
-    if (verifyAssignmentAsTA($dbConnection)) {
-        if (empty($deleteMaterialId)) {
-            echo "<br><br>Material ID required";
+    if (verifyAssignmentAsTA($dbConnection, $deleteMeetingId)) {
+        if (empty($deleteMaterialId) || empty($deleteMeetingId)) {
+            echo "<br><br>Material ID and Meeting ID required";
         } else {
             $deleteQuery = "delete from material where material_id = " . $deleteMaterialId;
             try {

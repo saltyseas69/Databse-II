@@ -113,7 +113,6 @@ if(isset($_POST['create'])) {
             '"' . $createUrl . '", ' .
             '"' . $createNotes . '", ' .
             'DATE "' . $createAssignedDate . '")';
-        echo $createQuery;
         try {
             $result = mysqli_query($dbConnection, $createQuery);
         } catch (mysqli_sql_exception $e) {
