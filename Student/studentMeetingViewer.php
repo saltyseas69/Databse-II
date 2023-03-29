@@ -15,7 +15,7 @@
     <a href="./studentMeetingViewer.php">Home</a> |
     <a href="./studentAccount.php">Account</a> |
     <a href="./selectGrade.php">Select Grade</a> |
-    <a href="./studentJoinMeeting.php">Join</a> |
+    <a href="./studentJoinMeeting.php">Meeting Dashboard</a> |
     <a href="./ta.php">Teacher Assistant</a> |
     <a href="../index.php">Logout</a>
 </nav>

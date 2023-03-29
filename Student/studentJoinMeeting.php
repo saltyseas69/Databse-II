@@ -51,7 +51,8 @@
 
 
                         echo
-                            "<h4>--------Meeting Details----------</h4>" .
+                            "<h4>--------Complete Meeting Details----------</h4>" .
+                            "<h4>Meeting Info</h4>" .
                             "Meeting Name : $meetingName<br>".
                             "Meeting ID : $meetingID<br>" .
                             "Date: $date<br>" .
@@ -100,7 +101,7 @@
                                 $assignedDate = $dataRow['assigned_date'];
                                  
                                 echo
-                                "<h4>--------Material Details----------</h4>" .
+                                "<h4>Material Info</h4>" .
                                 "Material ID: $materialID<br>".
                                 "Title: $title<br>" .
                                 "Author: $author<br>" .
