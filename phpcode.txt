@@ -1,0 +1,7 @@
+Database Connection in every file:
+$dbConnection = mysqli_connect("localhost", "root", "", "DB2");
+if (!$dbConnection) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+*****************************
