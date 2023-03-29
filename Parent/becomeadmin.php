@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register Account</title>
+    <title>Parent to Admin Registration</title>
 </head>
 <body>
 
@@ -19,8 +19,6 @@
             <a href="../index.php">Logout</a>
         </nav>
         <br>
-        <a href="../index.php">Account Login</a>
-        <br><br>
 <b>Enter Admin credentials and click "Verify"</b>
 
 <section>
@@ -41,16 +39,6 @@
         <label for="phone">Phone: </label>
         <input type="text" id="phone" name="phone">
         <br><br>
-        <label for="grade">Grade (if Student): </label>
-        <input type="text" id="grade" name="grade">
-        <br><br>
-        <label for="type">Account Type: </label>
-        <select name="type" id="type">
-            <option value="admins">Admin</option>
-            <option value="students">Student</option>
-            <option value="parents">Parent</option>
-        </select>
-        <br><br>
         <input type="submit" name="register" value="Verify">
     </form>
 </section>
@@ -64,14 +52,14 @@ if (!$dbConnection) {
 $parent = "select * from users where id = " . $_SESSION['sessionID'];
 $p_result = mysqli_query($dbConnection, $parent);
 
-//select the child of the parent that logged in
-$childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
+//find number of children of the parent that logged in
+$childCount = "SELECT count(*) as childCount FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
+
 //the variable defined in the last line is used to access the db
-$childof_result = $dbConnection->query($childof);
+$childof_result = $dbConnection->query($childCount);
 //now fetch all the data while the rows are not empty
-    while($row = $childof_result->fetch_assoc()){
-        $child_name = $row["student_id"];
-    }
+$childOfRow = $childof_result->fetch_assoc();
+$childCountActual = $childOfRow['childCount'];
 
 if(isset($_POST['register'])) {
     $id = $_POST['id'];
@@ -79,52 +67,31 @@ if(isset($_POST['register'])) {
     $password = $_POST['password'];
     $name = $_POST['name'];
     $phone = $_POST['phone'];
-    $type = $_POST['type'];
-    $grade = $_POST['grade'];
 
-    if (empty($id) || empty($email) || empty($password) || empty($name) || empty($phone) || empty($type)) {
+    if (empty($id) || empty($email) || empty($password) || empty($name) || empty($phone)) {
         echo "Data required in all fields except grade";
     } else {
+    if ($childCountActual > 0) {
+        echo "<br>Can not be admin with child enrolled in school<br>";
+    }
+    else {
         $query = 'insert into users values (' . $id . ', "' . $email . '", "' . $password . '", "' . $name . '", ' . $phone . ')';
         $result = mysqli_query($dbConnection, $query);
 
         if (!$result) {
             echo "<br>Could not insert into User table<br>";
-        }
-        else {
+        } else {
             echo "<br>Successfuly inserted into User table<br>";
 
-            switch ($type) {
-                case "admins":
-                    $query = 'insert into admins values (' . $id .')';
-                    $result = mysqli_query($dbConnection, $query);
-                    if (!$result && $child_name > 0) {
-                        echo "<br>Could not insert into Admin table<br>";
-                    }
-                    else {
-                        echo "<br>Successfuly inserted into Admin table<br>";
-                    }
-                    break;
-                case "students":
-                    $query = 'insert into students values (' . $id .', ' . $grade .')';
-                    $result = mysqli_query($dbConnection, $query);
-                    if (!$result) {
-                        echo "<br>Could not insert into Students table<br>";
-                    } else {
-                        echo "<br>Successfuly inserted into Students table<br>";
-                    }
-                    break;
-                case "parents":
-                    $query = 'insert into parents values (' . $id .')';
-                    $result = mysqli_query($dbConnection, $query);
-                    if (!$result) {
-                        echo "<br>Could not insert into Parents table<br>";
-                    } else {
-                        echo "<br>Successfuly inserted into Parents table<br>";
-                    }
-                    break;
-                default:
-                    echo "<br>Unexpected error, invalid Acct Type<br>";
+            $query = 'insert into admins values (' . $id . ')';
+            $result = mysqli_query($dbConnection, $query);
+
+            if (!$result) {
+                echo "<br>Could not insert into Admin table<br>";
+            } else {
+                echo "<br>Successfuly inserted into Admin table<br>";
+            }
+
             }
         }
     }
