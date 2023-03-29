@@ -108,7 +108,7 @@ if(isset($_POST['create'])) {
         $createQuery = 'insert into meetings values (' .
             $meetingId . ', ' .
             '"' . $name . '", ' .
-            '"' . $date . '", ' .
+            'DATE "' . $date . '", ' .
             $timeSlotId . ', ' .
             $capacity . ', ' .
             $groupId . ', ' .
@@ -154,7 +154,7 @@ if(isset($_POST['update'])) {
                 }
             }
             if (!empty($date)) {
-                $updateQuery = 'update meetings set date = ' . $date . ' where meeting_id = ' . $meetingId;
+                $updateQuery = 'update meetings set date = DATE "' . $date . '" where meeting_id = ' . $meetingId;
                 try {
                     $result = mysqli_query($dbConnection, $updateQuery);
                 } catch (mysqli_sql_exception $e) {
@@ -237,9 +237,12 @@ if(isset($_POST['delete'])) {
 }
 
 if(isset($_POST['verify'])) {
+    // Date is simulated as Friday
     $verificationDate = date_create($_POST['verificationDate']);
+    $weekendDate = clone $verificationDate;
 
-    $weekendDate = date_add($verificationDate, date_interval_create_from_date_string("2 days"));
+    // Date is simulated as Sunday based on above date
+    $weekendDate->modify('+2 day');
 
     // Query DB for all meetings
     $verifyQuery = "select * from meetings";
@@ -250,7 +253,7 @@ if(isset($_POST['verify'])) {
             $meetingDate = date_create($verifyRow['date']);
 
             // Check if meeting is within verification window, if so verify attendance
-            if ($meetingDate < $weekendDate) {
+            if ($meetingDate >= $verificationDate && $meetingDate <= $weekendDate) {
                 $verifyMeetingId = $verifyRow['meeting_id'];
                 //Query enroll with meetingId to determine # of students in attendance
                 $enrollQuery = "select count(*) as attendance from enroll where meeting_id = " . $verifyMeetingId;
@@ -282,24 +285,22 @@ if(isset($_POST['verify'])) {
                                 echo "Unexpected error: student does not exist in users table";
                             }
                         }
-                    } else {
-                        echo "Unexpected error: No students ids associated with enrolled tuple.";
                     }
+                    // Remove meeting
+                    $deleteQuery = "delete from enroll where meeting_id  = " . $verifyRow['meeting_id'];
+                    try {
+                        $result = mysqli_query($dbConnection, $deleteQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo $e;
+                    }
+                    $deleteQuery = "delete from meetings where meeting_id  = " . $verifyRow['meeting_id'];
+                    try {
+                        $result = mysqli_query($dbConnection, $deleteQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo $e;
+                    }
+                    echo "<br>Removed Meeting ID: $verifyMeetingId <br>";
                 }
-                // Remove meeting
-                $deleteQuery = "delete from enroll where meeting_id  = " . $verifyRow['meeting_id'];
-                try {
-                    $result = mysqli_query($dbConnection, $deleteQuery);
-                } catch (mysqli_sql_exception $e) {
-                    echo $e;
-                }
-                $deleteQuery = "delete from meetings where meeting_id  = " . $verifyRow['meeting_id'];
-                try {
-                    $result = mysqli_query($dbConnection, $deleteQuery);
-                } catch (mysqli_sql_exception $e) {
-                    echo $e;
-                }
-                echo "<br>Removed Meeting, affected Enroll and Meeting tables.<br>";
             }
         }
     } else {
