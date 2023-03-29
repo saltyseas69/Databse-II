@@ -51,7 +51,8 @@
 
 
                         echo
-                            "<h4>--------Meeting Details----------</h4>" .
+                            "<h4>--------Complete Meeting Details----------</h4>" .
+                            "<h4>Meeting Info</h4>" .
                             "Meeting Name : $meetingName<br>".
                             "Meeting ID : $meetingID<br>" .
                             "Date: $date<br>" .
@@ -79,10 +80,38 @@
                                 echo "Name: " . $enrolledRow['name'];
                                 echo "<br>Email: " . $enrolledRow['email'] . '<br><br>';
                             }
-                        } else {
+
+                        } 
+                        else {
                             echo "No other students enrolled";
                         }
+                        $material = 'select * 
+                                    from material
+                                    where meeting_id = ' . $currentMeetingID;
 
+                        $materialQuery = $dbConnection->query($material);
+                        if ($materialQuery->num_rows > 0) {
+                            while ($dataRow = $materialQuery->fetch_assoc()){
+                                $materialID = $dataRow['material_id'];
+                                $title = $dataRow['title'];
+                                $author = $dataRow['author'];
+                                $type = $dataRow['type'];
+                                $materialURL = $dataRow['url'];
+                                $notes = $dataRow['notes'];
+                                $assignedDate = $dataRow['assigned_date'];
+                                 
+                                echo
+                                "<h4>Material Info</h4>" .
+                                "Material ID: $materialID<br>".
+                                "Title: $title<br>" .
+                                "Author: $author<br>" .
+                                "Type: $type<br>" .
+                                "URL: $materialURL<br>" .
+                                "Notes: $notes<br>" .
+                                "Assigned Date: $assignedDate<br>";
+                            }
+                           
+                        }
                     }
                 } else {
                     echo "Unexpected error: Meeting from enroll table does not exist";
