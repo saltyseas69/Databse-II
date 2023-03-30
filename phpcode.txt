@@ -1,0 +1,860 @@
+Database Connection in every file:
+session_start();//this grabs the id of whoever is logged in
+$dbConnection = mysqli_connect("localhost", "root", "", "DB2");
+if (!$dbConnection) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+*******************************************************************
+User can create an Account:
+if(isset($_POST['register'])) {
+    $id = $_POST['id'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $name = $_POST['name'];
+    $phone = $_POST['phone'];
+    $type = $_POST['type'];
+    $grade = $_POST['grade'];
+
+    if (empty($id) || empty($email) || empty($password) || empty($name) || empty($phone) || empty($type)) {
+        echo "Data required in all fields except grade";
+    } else {
+        $query = 'insert into users values (' . $id . ', "' . $email . '", "' . $password . '", "' . $name . '", ' . $phone . ')';
+        $result = mysqli_query($dbConnection, $query);
+
+        if (!$result) {
+            echo "<br>Could not insert into User table<br>";
+        } else {
+            echo "<br>Successfuly inserted into User table<br>";
+
+            switch ($type) {
+                case "admins":
+                    $query = 'insert into admins values (' . $id .')';
+                    $result = mysqli_query($dbConnection, $query);
+                    if (!$result) {
+                        echo "<br>Could not insert into Admin table<br>";
+                    } else {
+                        echo "<br>Successfuly inserted into Admin table<br>";
+                    }
+                    break;
+                case "students":
+                    $query = 'insert into students values (' . $id .', ' . $grade .')';
+                    $result = mysqli_query($dbConnection, $query);
+                    if (!$result) {
+                        echo "<br>Could not insert into Students table<br>";
+                    } else {
+                        echo "<br>Successfuly inserted into Students table<br>";
+                    }
+                    break;
+                case "parents":
+                    $query = 'insert into parents values (' . $id .')';
+                    $result = mysqli_query($dbConnection, $query);
+                    if (!$result) {
+                        echo "<br>Could not insert into Parents table<br>";
+                    } else {
+                        echo "<br>Successfuly inserted into Parents table<br>";
+                    }
+                    break;
+                default:
+                    echo "<br>Unexpected error, invalid Acct Type<br>";
+            }
+        }
+    }
+}
+*****************************************************************************
+Student will be able to update their own Account
+if (isset($_POST['update'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $name = $_POST['name'];
+    $phone = $_POST['phone'];
+
+    if (empty($email) && empty($password) && empty($name) && empty($phone)) {
+        echo "No data to update";
+    } else {
+        if (!empty($email)) {
+            $updateQuery = 'update users set email = "' . $email . '" where id = ' . $_SESSION['sessionID'];
+            $updateResult = mysqli_query($dbConnection, $updateQuery);
+
+            if (!$updateResult) {
+                echo "Unexpected error, unable to update data";
+            } else {
+                header("Refresh:0");
+            }
+        }
+        if (!empty($password)) {
+            $updateQuery = 'update users set password = "' . $password . '" where id = ' . $_SESSION['sessionID'];
+            $updateResult = mysqli_query($dbConnection, $updateQuery);
+
+            if (!$updateResult) {
+                echo "Unexpected error, unable to update data";
+            } else {
+                header("Refresh:0");
+            }
+        }
+        if (!empty($name)) {
+            $updateQuery = 'update users set name = "' . $name . '" where id = ' . $_SESSION['sessionID'];
+            $updateResult = mysqli_query($dbConnection, $updateQuery);
+
+            if (!$updateResult) {
+                echo "Unexpected error, unable to update data";
+            } else {
+                header("Refresh:0");
+            }
+        }
+        if (!empty($phone)) {
+            $updateQuery = 'update users set phone = ' . $phone . ' where id = ' . $_SESSION['sessionID'];
+            $updateResult = mysqli_query($dbConnection, $updateQuery);
+
+            if (!$updateResult) {
+                echo "Unexpected error, unable to update data";
+            } else {
+                header("Refresh:0");
+            }
+        }
+    }
+}
+*****************************************************************************************************
+Parents will be able to update their own and childrens account
+Same as above for Parent.
+For child the following query is run before updating info
+//select the child of the parent that logged in
+$childof = "SELECT student_id FROM child_of WHERE parent_id = " . $_SESSION['sessionID'];
+//the variable defined in the last line is used to access the db
+$childof_result = $dbConnection->query($childof);
+//now fetch all the data while the rows are not empty
+    while($row = $childof_result->fetch_assoc()){
+        $child_name = $row["student_id"];
+    }
+***************************************************************************************************
+Admin can modify meetings and materials
+MODIFY MEETINGS
+if(isset($_POST['update'])) {
+    $meetingId = $_POST['id'];
+    $name = $_POST['name'];
+    $date = $_POST['date'];
+    $timeSlotId = $_POST['timeSlotId'];
+    $capacity = $_POST['capacity'];
+    $groupId = $_POST['groupId'];
+    $announcement = $_POST['announcement'];
+
+    if (empty($meetingId)) {
+        echo "Meeting ID required";
+    } else {
+        if (empty($name) && empty($date) && empty($timeSlotId) && empty($capacity) && empty($groupId) &&
+            empty($announcement)) {
+            echo "<br><br>Data required in at least one field";
+        } else {
+            if (!empty($name)) {
+                $updateQuery = 'update meetings set meeting_name = "' . $name . '" where meeting_id = ' . $meetingId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Meeting updated";
+                    }
+                }
+            }
+            if (!empty($date)) {
+                $updateQuery = 'update meetings set date = DATE "' . $date . '" where meeting_id = ' . $meetingId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Meeting updated";
+                    }
+                }
+            }
+            if (!empty($timeSlotId)) {
+                $updateQuery = 'update meetings set time_slot_id = ' . $timeSlotId . ' where meeting_id = ' . $meetingId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Meeting updated";
+                    }
+                }
+            }
+            if (!empty($capacity)) {
+                $updateQuery = 'update meetings set capacity = ' . $capacity . ' where meeting_id = ' . $meetingId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Meeting updated";
+                    }
+                }
+            }
+            if (!empty($groupId)) {
+                $updateQuery = "update meetings set group_id = " . $groupId . " where meeting_id = " . $meetingId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Meeting updated";
+                    }
+                }
+            }
+            if (!empty($announcement)) {
+                $updateQuery = 'update meetings set announcement = "' . $announcement . '" where meeting_id = ' . $meetingId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                } finally {
+                    if ($result) {
+                        echo "<br><br>Meeting updated";
+                    }
+                }
+            }
+        }
+    }
+}
+MODIFY MATERIALS
+if(isset($_POST['update'])) {
+    $udpateMaterialId = $_POST['materialID'];
+    $updateMeetingId = $_POST['meetingID'];
+    $updateTitle = $_POST['title'];
+    $updateAuthor = $_POST['author'];
+    $updateType = $_POST['type'];
+    $updateUrl = $_POST['url'];
+    $updateNotes = $_POST['notes'];
+    $updateAssignedDate = $_POST['date'];
+
+    if (empty($udpateMaterialId)) {
+        echo "<br><br>Material ID required for updates";
+    } else {
+        if (empty($updateMeetingId) && empty($updateTitle) && empty($updateAuthor) && empty($updateType) && empty($updateUrl) &&
+            empty($updateNotes) && empty($updateAssignedDate)) {
+            echo "<br><br>Data required in at least one field";
+        } else {
+            if (!empty($updateMeetingId)) {
+                $updateQuery = 'update material set meeting_id = ' . $updateMeetingId . ' where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+            if (!empty($updateTitle)) {
+                $updateQuery = 'update material set title = "' . $updateTitle . '" where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+            if (!empty($updateAuthor)) {
+                $updateQuery = 'update material set author = "' . $updateAuthor . '" where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+            if (!empty($updateType)) {
+                $updateQuery = 'update material set type = "' . $updateType . '" where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+            if (!empty($updateUrl)) {
+                $updateQuery = 'update material set url = "' . $updateUrl . '" where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+            if (!empty($updateNotes)) {
+                $updateQuery = 'update material set notes = "' . $updateNotes . '" where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+            if (!empty($updateAssignedDate)) {
+                $updateQuery = 'update material 
+                                set assigned_date = DATE "' . $updateAssignedDate . '"
+                                where material_id = ' . $udpateMaterialId;
+                try {
+                    $result = mysqli_query($dbConnection, $updateQuery);
+                } catch (mysqli_sql_exception $e) {
+                    echo $e;
+                }
+            }
+        }
+    }
+}
+*************************************************************************************
+All users can find info about meetings and groups
+it is the same for each user that is logged in
+    $query = 'select * from meetings';
+    $result = mysqli_query($dbConnection, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+
+        while($row = mysqli_fetch_assoc($result)) {
+            $meetingId = $row['meeting_id'];
+            $meetingName = $row['meeting_name'];
+            $date = $row['date'];
+            $timeSlot = $row['time_slot_id'];
+            $capacity = $row['capacity'];
+            $groupId = $row['group_id'];
+            $announcement = $row['announcement'];
+
+            echo "Meeting ID: $meetingId<br>" .
+                "Meeting Name: $meetingName<br>" .
+                "Date: $date<br>" .
+                "Time Slot: $timeSlot<br>" .
+                "Capacity: $capacity<br>" .
+                "GroupID: $groupId<br>" .
+                "Announcement: $announcement <br>---------------------------------------------------------<br>";
+
+        }
+    } else {
+        echo "<br>No meetings currently made<br>";
+    }
+    ?>
+
+    <h3>Groups</h3>
+    <br>
+    <?php
+    $dbConnection = mysqli_connect("localhost", "root", "", "DB2");
+    if (!$dbConnection) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+
+    $query = 'select * from groups';
+    $result = mysqli_query($dbConnection, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+
+        while($row = mysqli_fetch_assoc($result)) {
+            $groupId = $row['group_id'];
+            $groupName = $row['name'];
+            $description = $row['description'];
+            $gradeReq = $row['grade_req'];
+
+            echo "Group ID: $groupId<br>" .
+                "Group Name: $groupName<br>" .
+                "Description: $description<br>" .
+                "Grade Requirement: $gradeReq<br>---------------------------------------------------------<br>";
+        }
+    } else {
+        echo "<br>No meetings currently made<br>";
+    }
+****************************************************************************************************
+a student may join more than 1 Group
+if(isset($_POST['add'])) {
+    $id = $_POST['groupadd'];
+    if(empty($id)){
+        echo "Please select a group to add";
+    }
+    else if($id = $groupID){
+        $createQuery = 'insert into member_of values (' . 
+            $groupID . ', '. $_SESSION['sessionID'].')'; 
+            $addresult = mysqli_query($dbConnection, $createQuery);
+            echo "Group has been successfully added.";
+
+    }
+    else {
+        echo "No classes added"; 
+    }
+}
+****************************************************************************************************
+admin can create meetings
+if(isset($_POST['create'])) {
+    $meetingId = $_POST['id'];
+    $name = $_POST['name'];
+    $date = $_POST['date'];
+    $timeSlotId = $_POST['timeSlotId'];
+    $capacity = $_POST['capacity'];
+    $groupId = $_POST['groupId'];
+    $announcement = $_POST['announcement'];
+
+    if (empty($meetingId) || empty($name) || empty($date) || empty($timeSlotId) || empty($capacity) || empty($groupId) ||
+        empty($announcement)) {
+        echo "<br><br>Data required in all fields";
+    } else {
+        $createQuery = 'insert into meetings values (' .
+            $meetingId . ', ' .
+            '"' . $name . '", ' .
+            'DATE "' . $date . '", ' .
+            $timeSlotId . ', ' .
+            $capacity . ', ' .
+            $groupId . ', ' .
+            '"' . $announcement . '")';
+        try {
+            $result = mysqli_query($dbConnection, $createQuery);
+        } catch (mysqli_sql_exception $e) {
+            echo $e;
+        } finally {
+            if ($result) {
+                echo "<br><br>Meeting created";
+            }
+        }
+    }
+}
+******************************************************************************
+a student can join all future meetings by end of thursday
+            if(isset($_POST['verify'])) {
+                $meetingID = $_POST['joinmeet'];
+                $studentID = $_SESSION['sessionID'];
+                $verify = date_create($_POST['verificationDate']);
+                if(empty($verify)){
+                    echo "<br>Input date to join meeting<br>";
+                }
+                else{
+                    $meeting_date = "SELECT date FROM meetings WHERE' $meetingID '= meeting_id";
+                    $meeting_date_result = mysqli_query($dbConnection, $meeting_date);
+                    $meeting_date_row = $meeting_date_result->fetch_assoc();
+
+                    $meetingDate = date_create($meeting_date_row['date']);
+                    // Check if meeting is within verification window, if so verify attendance
+                    if ($meetingDate >= $verify) {
+                        if (empty($meetingID)) {
+                            echo "<br><br>Input valid Meeting ID";
+                        } else {
+                            // Query meeting to determine current capacity
+                            $capacityQuery = 'select count(*) as currentCapacity 
+                                            from enroll 
+                                            where meeting_id = ' . $meetingID;
+                            $capacityResult = $dbConnection->query($capacityQuery);
+        
+                            $capacityRow = $capacityResult->fetch_assoc();
+                            if ($capacityRow['currentCapacity'] > 5) {
+                                echo "Meeting is at capacity, cannot join";
+                            } else {
+                                // Query meeting desired for its associate group
+                                $validateGradeQuery = 'select * from meetings where meeting_id = ' . $meetingID;
+                                try {
+                                    $validationResults = mysqli_query($dbConnection, $validateGradeQuery);
+                                } catch (mysqli_sql_exception $e) {
+                                    echo $e;
+                                    die();
+                                }
+                                $meetingCheckForValidation = mysqli_fetch_assoc($validationResults);
+                                $groupIDToCheckForValidation =  $meetingCheckForValidation['group_id'];
+        
+                                // Query associated group for its grade requirement
+                                $groupIDValidationQuery = 'select grade_req from groups where group_id = ' . $groupIDToCheckForValidation;
+                                try {
+                                    $groupIDValidationResult = mysqli_query($dbConnection, $groupIDValidationQuery);
+                                } catch (mysqli_sql_exception $e) {
+                                    echo $e;
+                                    die();
+                                }
+        
+                                $gradeReqRow = mysqli_fetch_assoc($groupIDValidationResult);
+                                $gradeReq = $gradeReqRow['grade_req'];
+        
+                                // Query student for their grade
+                                $studentGradeQuery = 'select grade from students where student_id = ' . $studentID;
+                                try {
+                                    $studentGradeResult = mysqli_query($dbConnection, $studentGradeQuery);
+                                } catch (Exception $e) {
+                                    echo $e;
+                                    die();
+                                }
+        
+                                $studentGradeRow = mysqli_fetch_assoc($studentGradeResult);
+                                $studentGrade = $studentGradeRow['grade'];
+        
+                                // Verify student can be added to meeting
+                                if ($gradeReq > $studentGrade) {
+                                    echo "Student does not meet grade requirement";
+                                } else {
+                                    $addQuery = 'insert into enroll values (' .
+                                        $meetingID . ', '. $studentID .')';
+                                    try {
+                                        $result = mysqli_query($dbConnection, $addQuery);
+                                    } catch (mysqli_sql_exception $e) {
+                                        echo $e;
+                                    } finally {
+                                        if ($result) {
+                                            echo "<br><br>Student Added to meeting";
+                                            redirect('studentJoinMeeting.php');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        }
+                    }
+***********************************************************************************************
+student can quit one or more meetings
+            if(isset($_POST['delete'])) {
+                $meetingID = $_POST['deletemeet'];
+                $studentID = $_SESSION['sessionID'];
+                if (empty($meetingID)) {
+                    echo "<br><br>Input valid Meeting ID";
+                } else {
+                    $deleteQuery = 'delete from enroll 
+                                where student_id = ' . $studentID .' and meeting_id = ' . $meetingID;
+                    try {
+                        $result = mysqli_query($dbConnection, $deleteQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo "Student was never enrolled in meeting";
+                    }
+                }
+            }
+***********************************************************************************
+parents can sign up meetings for their child
+
+            if(isset($_POST['add'])) {
+                $meetingID = $_POST['meetingid'];
+                $studentID = $child_name;
+                if (empty($meetingID)) {
+                    echo "<br><br>Input valid Meeting ID";
+                } else {
+                    // Query meeting to determine current capacity
+                    $capacityQuery = 'select count(*) as currentCapacity 
+                                    from enroll 
+                                    where meeting_id = ' . $meetingID;
+                    $capacityResult = $dbConnection->query($capacityQuery);
+
+                    $capacityRow = $capacityResult->fetch_assoc();
+                    if ($capacityRow['currentCapacity'] > 5) {
+                        echo "Meeting is at capacity, cannot join";
+                    } else {
+                        // Query meeting desired for its associate group
+                        $validateGradeQuery = 'select * from meetings where meeting_id = ' . $meetingID;
+                        try {
+                            $validationResults = mysqli_query($dbConnection, $validateGradeQuery);
+                        } catch (mysqli_sql_exception $e) {
+                            echo $e;
+                            die();
+                        }
+                        $meetingCheckForValidation = mysqli_fetch_assoc($validationResults);
+                        $groupIDToCheckForValidation = $meetingCheckForValidation['group_id'];
+
+                        // Query associated group for its grade requirement
+                        $groupIDValidationQuery = 'select grade_req from groups where group_id = ' . $groupIDToCheckForValidation;
+                        try {
+                            $groupIDValidationResult = mysqli_query($dbConnection, $groupIDValidationQuery);
+                        } catch (mysqli_sql_exception $e) {
+                            echo $e;
+                            die();
+                        }
+
+                        $gradeReqRow = mysqli_fetch_assoc($groupIDValidationResult);
+                        $gradeReq = $gradeReqRow['grade_req'];
+
+                        // Query student for their grade
+                        $studentGradeQuery = 'select grade from students where student_id = ' . $studentID;
+                        try {
+                            $studentGradeResult = mysqli_query($dbConnection, $studentGradeQuery);
+                        } catch (Exception $e) {
+                            echo $e;
+                            die();
+                        }
+
+                        $studentGradeRow = mysqli_fetch_assoc($studentGradeResult);
+                        $studentGrade = $studentGradeRow['grade'];
+
+                        // Verify student can be added to meeting
+                        if ($gradeReq > $studentGrade) {
+                            echo "Student does not meet grade requirement";
+                        } else {
+                            $addQuery = 'insert into enroll values (' .
+                                $meetingID . ', ' . $studentID . ')';
+                            try {
+                                $result = mysqli_query($dbConnection, $addQuery);
+                            } catch (mysqli_sql_exception $e) {
+                                echo $e;
+                            } finally {
+                                if ($result) {
+                                    echo "<br><br>Student Added to meeting";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+***************************************************************************
+students can be assigned to meetings by the admin
+same as above
+****************************************************************************
+each meeting can have at most 6 students
+this check is in previous php
+****************************************************************************
+students will see list of others enrolled
+$currentMeetingsQuery = 'select * from enroll where student_id = ' . $_SESSION['sessionID'];
+        $currentMeetingsResult = $dbConnection->query($currentMeetingsQuery);
+
+        if($currentMeetingsResult->num_rows > 0) {
+            while ($row = $currentMeetingsResult->fetch_assoc()) {
+                $currentMeetingID = $row['meeting_id'];
+
+                $meetingDataQuery = 'select * from meetings where meeting_id = ' . $currentMeetingID;
+                $meetingDataResult = $dbConnection->query($meetingDataQuery);
+
+                if ($meetingDataResult->num_rows > 0) {
+                    while ($dataRow = $meetingDataResult->fetch_assoc()) {
+                        $meetingName = $dataRow['meeting_name'];
+                        $meetingID = $dataRow['meeting_id'];
+                        $date = $dataRow['date'];
+                        $time = $dataRow['time_slot_id'];
+                        $capacity = $dataRow['capacity'];
+                        $groupID = $dataRow['group_id'];
+                        $announcement = $dataRow['announcement'];
+
+
+                        echo
+                            "<h4>--------Complete Meeting Details----------</h4>" .
+                            "<h4>Meeting Info</h4>" .
+                            "Meeting Name : $meetingName<br>".
+                            "Meeting ID : $meetingID<br>" .
+                            "Date: $date<br>" .
+                            "Time: $time<br>" .
+                            "Capacity: $capacity<br>" .
+                            "Group ID: $groupID<br>" .
+                            "Announcement: $announcement<br>";
+
+                        $enrolledStudentsQuery = 'select * 
+                                                from users 
+                                                where id in (
+                                                    select student_id
+                                                    from enroll
+                                                    where meeting_id = ' . $currentMeetingID . '
+                                                )';
+                        try {
+                            $enrolledStudentsResult = $dbConnection->query($enrolledStudentsQuery);
+                        } catch (Exception $e) {
+                            echo $e;
+                        }
+
+                        if ($enrolledStudentsResult->num_rows > 0) {
+                            echo "<h4>Enrolled Students</h4>";
+                            while ($enrolledRow = $enrolledStudentsResult->fetch_assoc()) {
+                                echo "Name: " . $enrolledRow['name'];
+                                echo "<br>Email: " . $enrolledRow['email'] . '<br><br>';
+                            }
+
+                        } 
+                        else {
+                            echo "No other students enrolled";
+                        }
+                        $material = 'select * 
+                                    from material
+                                    where meeting_id = ' . $currentMeetingID;
+
+                        $materialQuery = $dbConnection->query($material);
+                        if ($materialQuery->num_rows > 0) {
+                            while ($dataRow = $materialQuery->fetch_assoc()){
+                                $materialID = $dataRow['material_id'];
+                                $title = $dataRow['title'];
+                                $author = $dataRow['author'];
+                                $type = $dataRow['type'];
+                                $materialURL = $dataRow['url'];
+                                $notes = $dataRow['notes'];
+                                $assignedDate = $dataRow['assigned_date'];
+                                 
+                                echo
+                                "<h4>Material Info</h4>" .
+                                "Material ID: $materialID<br>".
+                                "Title: $title<br>" .
+                                "Author: $author<br>" .
+                                "Type: $type<br>" .
+                                "URL: $materialURL<br>" .
+                                "Notes: $notes<br>" .
+                                "Assigned Date: $assignedDate<br>";
+                            }
+                           
+                        }
+                    }
+                } else {
+                    echo "Unexpected error: Meeting from enroll table does not exist";
+                }
+            }
+        } else {
+            echo "Not enrolled in any meetings";
+        }
+*************************************************************************************
+meeting will be cancelled by admin if fewer than 3 students and notify students
+if(isset($_POST['verify'])) {
+    // Date is simulated as Friday
+    $verificationDate = date_create($_POST['verificationDate']);
+    $weekendDate = clone $verificationDate;
+
+    // Date is simulated as Sunday based on above date
+    $weekendDate->modify('+2 day');
+
+    // Query DB for all meetings
+    $verifyQuery = "select * from meetings";
+    $verifyResult = mysqli_query($dbConnection, $verifyQuery);
+
+    if (mysqli_num_rows($verifyResult) > 0) {
+        while ($verifyRow = mysqli_fetch_assoc($verifyResult)) {
+            $meetingDate = date_create($verifyRow['date']);
+
+            // Check if meeting is within verification window, if so verify attendance
+            if ($meetingDate >= $verificationDate && $meetingDate <= $weekendDate) {
+                $verifyMeetingId = $verifyRow['meeting_id'];
+                //Query enroll with meetingId to determine # of students in attendance
+                $enrollQuery = "select count(*) as attendance from enroll where meeting_id = " . $verifyMeetingId;
+                $enrollResult = mysqli_query($dbConnection, $enrollQuery);
+
+                // Determine if attendance is < 3, if so remove meeting and create notification file
+                $enrollRow = mysqli_fetch_assoc($enrollResult);
+                if ($enrollRow['attendance'] < 3) {
+                    // Grab userIds from Meeting
+                    $userIdQuery = "select student_id from enroll where meeting_id = " . $verifyMeetingId;
+                    $userIdResult = mysqli_query($dbConnection, $userIdQuery);
+                    if (mysqli_num_rows($userIdResult) > 0) {
+                        while ($userIdRow = mysqli_fetch_assoc($userIdResult)) {
+                            $userId = $userIdRow['student_id'];
+
+                            // Query Users for Name / email, concat to notification file
+                            $notificationListQuery = "select * from users where id = " . $userId;
+                            $notificationListResult = mysqli_query($dbConnection, $notificationListQuery);
+
+                            if (mysqli_num_rows($notificationListResult) > 0) {
+                                $notificationRow = mysqli_fetch_assoc($notificationListResult);
+                                $fileName = "../Notifications/" . $verificationDate->format('y-m-d') . "_NotifyList.txt";
+
+                                $myfile = fopen($fileName, "w");
+                                $toNotify = "Name: " . $notificationRow['name'] . "    Email: " . $notificationRow['email'];
+                                fwrite($myfile, $toNotify);
+                                fclose($myfile);
+                            } else {
+                                echo "Unexpected error: student does not exist in users table";
+                            }
+                        }
+                    }
+                    // Remove meeting
+                    $deleteQuery = "delete from enroll where meeting_id  = " . $verifyRow['meeting_id'];
+                    try {
+                        $result = mysqli_query($dbConnection, $deleteQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo $e;
+                    }
+                    $deleteQuery = "delete from meetings where meeting_id  = " . $verifyRow['meeting_id'];
+                    try {
+                        $result = mysqli_query($dbConnection, $deleteQuery);
+                    } catch (mysqli_sql_exception $e) {
+                        echo $e;
+                    }
+                    echo "<br>Removed Meeting ID: $verifyMeetingId <br>";
+                }
+            }
+        }
+    } else {
+        echo "No meetings within DB.";
+    }
+}
+**************************************************************************
+admin will post materials every friday for the following week
+check already exists
+*************************************************************************
+students will see list of material for meetings they enrolled in
+already queried in previous entry 
+************************************************************************
+admin can assign and remove TA that can create materials
+if (isset($_POST['assign'])) {
+    $studentID = $_POST['studentID'];
+    $meetingID = $_POST['meetingID'];
+
+    if (empty($studentID) || empty($meetingID)) {
+        echo "All data fields required to be filled";
+    } else {
+        // Validate that the student is not enrolled in the class, or a TA already
+        $studentValidationQuery = 'select count(*) as studentCount from enroll 
+                                where student_id = ' . $studentID . ' and meeting_id = ' . $meetingID;
+        $studentValidationResult = mysqli_query($dbConnection, $studentValidationQuery);
+        $studentRow = mysqli_fetch_assoc($studentValidationResult);
+        if ($studentRow['studentCount'] != 0) {
+            echo '<br><br>Student is enrolled in class, unable to add.';
+        } else {
+            $studentValidationQuery = 'select count(*) as studentCount from assigned_assistants where student_id = ' . $studentID;
+            $studentValidationResult = mysqli_query($dbConnection, $studentValidationQuery);
+
+            $studentRow = mysqli_fetch_assoc($studentValidationResult);
+            if ($studentRow['studentCount'] != 0) {
+                echo '<br><br>Student is already a TA, unable to add.';
+            } else {
+                $assignmentQuery = 'insert into assigned_assistants values (' .
+                    $studentID . ', ' .
+                    $meetingID .')';
+            }
+            try {
+                mysqli_query($dbConnection, $assignmentQuery);
+            } catch (mysqli_sql_exception $e) {
+                echo $e;
+                die();
+            }
+        }
+    }
+}
+if (isset($_POST['remove'])) {
+    $studentID = $_POST['studentID'];
+    $meetingID = $_POST['meetingID'];
+
+    if (empty($studentID) && empty($meetingID)) {
+        echo "At least one data field required";
+    } else {
+        if (!empty($studentID) || (!empty($studentID) && !empty($meetingID))) {
+            $removalQuery = 'delete from assigned_assistants where student_id = ' . $studentID;
+            try {
+                mysqli_query($dbConnection, $removalQuery);
+            } catch (mysqli_sql_exception $e){
+                echo $e;
+                die();
+            }
+            echo '<br>Successfully removed TA.<br>';
+        }
+    }
+}
+*************************************************************************
+ta can create materials
+same query as admin
+**************************************************************************
+parent can register as admin if they dont have child enrolled
+if(isset($_POST['register'])) {
+    $id = $_POST['id'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $name = $_POST['name'];
+    $phone = $_POST['phone'];
+
+    if (empty($id) || empty($email) || empty($password) || empty($name) || empty($phone)) {
+        echo "Data required in all fields except grade";
+    } else {
+    if ($childCountActual > 0) {
+        echo "<br>Can not be admin with child enrolled in school<br>";
+    }
+    else {
+        $query = 'insert into users values (' . $id . ', "' . $email . '", "' . $password . '", "' . $name . '", ' . $phone . ')';
+        $result = mysqli_query($dbConnection, $query);
+
+        if (!$result) {
+            echo "<br>Could not insert into User table<br>";
+        } else {
+            echo "<br>Successfuly inserted into User table<br>";
+
+            $query = 'insert into admins values (' . $id . ')';
+            $result = mysqli_query($dbConnection, $query);
+
+            if (!$result) {
+                echo "<br>Could not insert into Admin table<br>";
+            } else {
+                echo "<br>Successfuly inserted into Admin table<br>";
+            }
+
+            }
+        }
+    }
+}
